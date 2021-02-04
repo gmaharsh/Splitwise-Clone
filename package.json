@@ -1,0 +1,24 @@
+{
+  "name": "splitwise-clone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gmaharsh/Splitwise-Clone.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gmaharsh/Splitwise-Clone/issues"
+  },
+  "homepage": "https://github.com/gmaharsh/Splitwise-Clone#readme",
+  "dependencies": {
+    "apollo-server": "^2.19.2",
+    "graphql-tag": "^2.11.0",
+    "nodemon": "^2.0.7"
+  }
+}
