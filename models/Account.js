@@ -23,3 +23,5 @@ const AccountSchema = new Schema({
         ref:'users'
     }
 })
+
+module.exports = model('Post', postSchema);
