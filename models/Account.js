@@ -2,19 +2,12 @@ const { model, Schema } = require('mongoose');
 
 const AccountSchema = new Schema({
     username: String,
-    body: String,
-    createdAt:String,
+    createdAt:Date,
     amountOwe: [
         {
-            amount: Integer,
-            username: String,
-            createdAt: String
-        }
-    ],
-    amountOwed: [
-        {
-            amount: Integer,
-            username: String,
+            amount: Number,
+            body:String,
+            borrower: String,
             createdAt: String
         }
     ],
@@ -24,4 +17,4 @@ const AccountSchema = new Schema({
     }
 })
 
-module.exports = model('Post', postSchema);
+module.exports = model('Post', AccountSchema);
