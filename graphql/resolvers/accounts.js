@@ -26,12 +26,12 @@ module.exports = {
             if (!lender) {
                 const newPost = new Account({
                     username: user.username,
+                    borrower: borrower[0]._id,
                     amountOwe: [
                         {
                             amount,
                             body,
                             borrower: username,
-                            id:borrower[0]._id
                         }
                     ],
                     createdAt: new Date()

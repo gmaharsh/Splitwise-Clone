@@ -11,7 +11,7 @@ const AccountSchema = new Schema({
             createdAt: String
         }
     ],
-    user: {
+    borrower: {
         type: Schema.Types.ObjectId,
         ref:'users'
     }
