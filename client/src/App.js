@@ -12,7 +12,7 @@ function App() {
         <Header />
         <div className="app__body">
           <Sidebar />
-          {/* <Dashboard /> */}
+          <Dashboard />
         </div>
       </Router>
     </div>

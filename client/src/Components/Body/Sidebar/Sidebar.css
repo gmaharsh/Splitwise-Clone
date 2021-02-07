@@ -1,9 +1,15 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: 0.2;
+}
 .sidebar__upper__items {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
   color: #999;
   line-height: 21px;
+  cursor: pointer;
   /* justify-content: space-between; */
 }
 
@@ -42,6 +48,7 @@ span > img {
   background: #f6f6f6;
   border-top: 0.5px solid lightgray;
   border-bottom: 0.5px solid lightgray;
+  cursor: pointer;
 }
 
 .sidebar__headline > h4 {
@@ -53,6 +60,7 @@ span > img {
   margin-top: 10px;
   align-items: center;
   color: #999999;
+  cursor: pointer;
 }
 
 .sidebar__items > h3 {

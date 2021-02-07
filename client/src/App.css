@@ -1,4 +1,5 @@
 .app__body {
   display: flex;
-  margin: 20px 350px;
+  /* margin: 0 auto; */
+  margin: 0px 350px;
 }
