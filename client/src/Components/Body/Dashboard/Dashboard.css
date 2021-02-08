@@ -65,7 +65,7 @@
   margin-right: -50px;
 }
 
-.ui.button {
+.body__headings__buttons > .ui.button {
   margin: 0;
   border: none;
   border-radius: 3px !important;
@@ -87,4 +87,28 @@
   width: 50%;
   padding-left: 14px;
   border-left: 1px solid #eee;
+}
+
+.model__content {
+  padding: 0.5rem !important;
+}
+
+.model__content > input {
+  border: none;
+  width: 70%;
+  outline: none;
+}
+
+.model__contentdescription > input {
+  border: none;
+  width: 100%;
+  outline: none;
+  padding: 0.5rem !important;
+  border-bottom: 3px dashed #eee;
+  margin-bottom: 0.5rem;
+}
+
+.model__contentbuttons {
+  padding: 0.5rem !important;
+  text-align: center;
 }
