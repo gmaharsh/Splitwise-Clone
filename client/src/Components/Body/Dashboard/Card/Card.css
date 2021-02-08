@@ -1,0 +1,16 @@
+.card {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+.card__details {
+  margin-left: 10px;
+}
+
+.card__details > h4 {
+  margin: 0;
+}
+
+.card__details > h5 {
+  margin: 0;
+}

@@ -32,6 +32,7 @@
 
 .dashboard__insight {
   display: flex;
+  flex: 0.3;
   flex-direction: column;
   align-items: center;
   padding: 15px;
@@ -39,4 +40,51 @@
 
 .dashboard__insight > h4 {
   margin: 0;
+}
+.dashboard__body {
+  display: flex;
+  flex-direction: column;
+  /* margin: 10px; */
+  padding: 10px 15px;
+}
+
+.body__headings {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.body__headings > h3 {
+  margin: 0;
+  color: #999;
+  font-size: 15px;
+}
+
+.body__headings__buttons {
+  display: inline;
+  margin-right: -50px;
+}
+
+.ui.button {
+  margin: 0;
+  border: none;
+  border-radius: 3px !important;
+}
+
+.dashboard__accounts {
+  display: flex;
+  margin-top: 10px;
+  justify-content: space-between;
+}
+
+.dashboard__owe {
+  width: 52%;
+  border-right: 1px solid #eee;
+  /* padding-left: 13px; */
+}
+
+.dashboard__owed {
+  width: 50%;
+  padding-left: 14px;
+  border-left: 1px solid #eee;
 }
