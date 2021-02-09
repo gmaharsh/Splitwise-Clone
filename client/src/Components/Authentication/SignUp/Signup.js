@@ -6,7 +6,7 @@ import { useMutation } from '@apollo/react-hooks';
 
 
 function Signup() {
-    // const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({});
 
     const [values, setValues] = useState({
         name: "",
@@ -17,6 +17,8 @@ function Signup() {
     const [addUser, { loading }] = useMutation(REGISTER_USER, {
         update(proxy, result) {
             console.log(result)
+        },onError(err) {
+            setErrors(err.graphQLErrors[0].extensions.exception.errors);
         },
         variables:values
     })
@@ -37,7 +39,7 @@ function Signup() {
             <img src="https://assets.splitwise.com/assets/core/logo-square-65a6124237868b1d2ce2f5db2ab0b7c777e2348b797626816400534116ae22d7.svg" alt="" />
             <div className="signup__details">
                 <h4>INTRODUCE YOURSELF</h4>
-                <Form onSubmit={onSubmit} noValidate className={loading? 'loading' :''}>
+                <Form onSubmit={onSubmit} noValidate >
                     <Form.Field>
                         <label>Hi there! My name is</label>
                         <input
@@ -75,6 +77,15 @@ function Signup() {
                         </Button>
                     </div>
                 </Form>
+                {Object.keys(errors).length > 0 && (
+                    <div className="ui error message">
+                    <ul className="list">
+                        {Object.values(errors).map((value) => (
+                        <li key={value}>{value}</li>
+                        ))}
+                    </ul>
+                    </div>
+                )}
             </div>
         </div>
     )
