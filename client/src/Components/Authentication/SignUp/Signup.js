@@ -5,7 +5,7 @@ import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks';
 
 
-function Signup() {
+function Signup(props) {
     const [errors, setErrors] = useState({});
 
     const [values, setValues] = useState({
@@ -17,6 +17,7 @@ function Signup() {
     const [addUser, { loading }] = useMutation(REGISTER_USER, {
         update(proxy, result) {
             console.log(result)
+            props.history.push('/')
         },onError(err) {
             setErrors(err.graphQLErrors[0].extensions.exception.errors);
         },
@@ -39,7 +40,7 @@ function Signup() {
             <img src="https://assets.splitwise.com/assets/core/logo-square-65a6124237868b1d2ce2f5db2ab0b7c777e2348b797626816400534116ae22d7.svg" alt="" />
             <div className="signup__details">
                 <h4>INTRODUCE YOURSELF</h4>
-                <Form onSubmit={onSubmit} noValidate >
+                <Form onSubmit={onSubmit} noValidate className={loading? 'loading' :''}>
                     <Form.Field>
                         <label>Hi there! My name is</label>
                         <input

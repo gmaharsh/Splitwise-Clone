@@ -5,7 +5,7 @@ import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks';
 
 
-function Login() {
+function Login(props) {
     const [errors, setErrors] = useState({});
 
     const [values, setValues] = useState({
@@ -14,8 +14,8 @@ function Login() {
     });
 
     const [loginUser, { loading }] = useMutation(LOGIN_USER, {
-        update(proxy, result) {
-            console.log(result)
+        update(_, {data:{login:userData}}) {
+            props.history.push('/')
         }, onError(err) {
             setErrors(err.graphQLErrors[0].extensions.exception.errors);
         },
@@ -29,7 +29,6 @@ function Login() {
     const onSubmit = (e) => {
         e.preventDefault();
         loginUser()
-        
     }
 
 
@@ -38,7 +37,7 @@ function Login() {
             <img src="https://assets.splitwise.com/assets/core/logo-square-65a6124237868b1d2ce2f5db2ab0b7c777e2348b797626816400534116ae22d7.svg" alt="" />
             <div className="login__details">
                 <h4>WELCOME TO SPLITWISE</h4>
-                <Form onSubmit={onSubmit} noValidate>
+                <Form onSubmit={onSubmit} noValidate className={loading? 'loading' :''}>
                     <Form.Field>
                         <label>Email address</label>
                         <input
@@ -82,8 +81,8 @@ function Login() {
 }
 
 const LOGIN_USER = gql`
-  mutation login($name: String!, $password: String!) {
-    login(name: $name, password: $password) {
+  mutation login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
       id
       email
       name
