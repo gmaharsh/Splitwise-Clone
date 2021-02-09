@@ -21,10 +21,11 @@ function Login() {
                     </Form.Field>
                     <Button className="ui orange button" type='submit'>Log in</Button>
                     <p>Forgot your password? Click Here</p>
-                    <div className="ui divider">
+                    <hr />
+                    <div className="login__socialButtons">
                         <p>Or log in with</p>
                         <Button basic>
-                            <Icon name='google'/> Google
+                            <Icon name='google' /> Google
                         </Button>
                     </div>
                 </Form>

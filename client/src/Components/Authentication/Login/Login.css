@@ -22,3 +22,16 @@
 .field > input {
   width: 100vh;
 }
+
+.login__socialButtons {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  justify-content: space-around;
+}
+
+@media (max-width: 400px) {
+  .login > img {
+    display: none;
+  }
+}

@@ -1,6 +1,6 @@
 import './App.css';
 import Header from './Components/Header/Header';
-import {BrowserRouter as Router,Route} from "react-router-dom";
+import {BrowserRouter as Router,Route, Switch} from "react-router-dom";
 import 'semantic-ui-css/semantic.min.css';
 import Sidebar from './Components/Body/Sidebar/Sidebar';
 import Dashboard from './Components/Body/Dashboard/Dashboard';
@@ -12,14 +12,14 @@ function App() {
     <div className="App">
       <Router>
         <Header />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/Signup" component={Signup} />
-        <div className="app__body">
-          <Route exact path="/">
-            <Sidebar />
-            <Dashboard />
-          </Route>
-        </div>
+          <Route exact path="/Signup" component={Signup} />
+          <Route exact path="/login" component={Login} />
+          <div className="app__body">
+            <Route exact path="/">
+              <Sidebar />
+              <Dashboard />
+            </Route>
+          </div>
       </Router>
     </div>
   );

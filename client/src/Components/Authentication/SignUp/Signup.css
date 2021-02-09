@@ -1,0 +1,23 @@
+.signup {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 60px 10px 0px;
+  width: 40rem;
+}
+
+.signup > img {
+  width: 200px;
+  height: 200px;
+}
+
+.signup__details {
+  margin-left: 30px;
+  width: 40rem;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
