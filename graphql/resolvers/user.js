@@ -9,23 +9,23 @@ function generateToken(user) {
     const token = jwt.sign({
         id: user.id,
         email: user.email,
-        username: user.username
+        name: user.name
     }, JWT_SECRET, { expiresIn: '1h' })
     return token;
 }
 
 module.exports = {
     Mutation: {
-        async login(_, { username, password }) {
+        async login(_, { email, password }) {
 
-            const { errors, valid } = validateLoginInput(username, password); 
+            const { errors, valid } = validateLoginInput(email, password); 
             if (!valid) {
                 throw new UserInputError('Errors', {error})
             }
 
-            const user = await User.findOne({ username });
+            const user = await User.findOne({ email });
             if (!user) {
-                errors.general = "User not found";
+                errors.general = "User not found with particular mail id";
                 throw new UserInputError('Wrong Crendentials', {errors})
             }
 
@@ -43,25 +43,25 @@ module.exports = {
                 token
             }
         },
-        async register(_, { registerInput: { username, email, password, confirmPassword } }, context, info) {
+        async register(_, { registerInput: { name, email, password } }, context, info) {
 
-            const { valid, errors } = validateRegisterInput(username, email, password, confirmPassword)
+            const { valid, errors } = validateRegisterInput(name, email, password)
             if (!valid) {
                 throw new UserInputError('Errors', {errors})
             }
 
-            const user = await User.findOne({ username });
+            const user = await User.findOne({ email });
             if (user) {
-                throw new UserInputError('Username is already taken', {
+                throw new UserInputError('Particular Email Already Exists', {
                     errors: {
-                        username:'This username is already taken'
+                        username:'Particular Email Already Exists'
                     }
                 })
             }
             password = await bcrypt.hash(password, 12);
 
             const newUser = new User({
-                username,
+                name,
                 email,
                 password,
                 createdAt: new Date().toISOString(),

@@ -18,13 +18,12 @@ module.exports = gql`
         id: ID!,
         email: String!,
         token: String!,
-        username: String!,
+        name: String!,
         createdAt: String!
     }
     input RegisterInput{
-        username:String!,
+        name:String!,
         password:String!,
-        confirmPassword:String!
         email:String!
     }, 
     type Query{
@@ -33,9 +32,9 @@ module.exports = gql`
     },
     type Mutation{
         register(registerInput: RegisterInput) : User!
-        login(username:String!, password:String!) : User!
+        login(email:String!, password:String!) : User!
         addAmount(body:String!, amount:String!, username:String!) : Account!
-        createComment(postId: String!, body:String!): Post!
-        deleteComment(postId:String!, commentId:ID!): Post!
+        createComment(postId: String!, body:String!): Account!
+        deleteComment(postId:String!, commentId:ID!): Account!
     }
 `;

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button, Form, Icon } from 'semantic-ui-react';
 import './Login.css';
+import gql from 'graphql-tag'
+
 
 function Login() {
     return (
@@ -33,5 +35,18 @@ function Login() {
         </div>
     )
 }
+
+const LOGIN_USER = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      id
+      email
+      username
+      createdAt
+      token
+    }
+  }
+`;
+
 
 export default Login
