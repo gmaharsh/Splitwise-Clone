@@ -7,7 +7,7 @@ function Sidebar() {
             <div className="sidebar__upper">
                 <div className="sidebar__upper__items">
                     <span>
-                        <img src="https://dev.splitwise.com/images/logo.svg" alt="" />
+                        <img src="https://lh3.googleusercontent.com/proxy/lmjMapv6W62KO-tm9HqQuUz84BnTtE8EulZ_lXTsePR2LGFFHmaeeMEEY4u-qjLkC7o--IVFde7KOLEwUhkYr20AaS4VsGbZ-gN-exnp-5zxeTYmud8" alt="" />
                     </span>
                     <h3>Dashboard</h3>
                 </div>

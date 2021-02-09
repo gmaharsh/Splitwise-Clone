@@ -1,0 +1,24 @@
+.login {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 60px 10px 0px;
+  width: 35rem;
+}
+
+.login > img {
+  width: 200px;
+  height: 200px;
+}
+.login__details {
+  margin-left: 30px;
+  width: 30rem;
+}
+
+.login__details > h4 {
+  color: #999;
+}
+
+.field > input {
+  width: 100vh;
+}
