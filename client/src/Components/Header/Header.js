@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './Header.css';
 import { Dropdown, Icon, Menu } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../context/auth';
 
 
 
 function Header() {
 
+    const { user, logout} = useContext(AuthContext)
     const [activeItem, setActiveItem] = useState('');
     const handleItemClick = (e, { name }) => setActiveItem(name)
 
@@ -14,7 +16,7 @@ function Header() {
         { key: 'user', text: 'Mahee',value:'Mahee' },
         { key: 'user', text: 'Create a group', as: Link, to: '/my-account' },
         { key: 'settings', text: 'Fairness Calculator' },
-        { key: 'sign-out', text: 'Sign Out', icon: 'sign out' },
+        { key: 'sign-out', text: 'Sign Out', icon: 'sign out', onClick: {logout}},
     ]
   
     

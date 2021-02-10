@@ -12,24 +12,24 @@ function Dashboard() {
     }
 
     const friendOptions = [
-        {
-            key: 'Jenny Hess',
-            text: 'Jenny Hess',
-            value: 'Jenny Hess',
-            image: { avatar: true, src: '/images/avatar/small/jenny.jpg' },
-        },
-        {
-            key: 'Elliot Fu',
-            text: 'Elliot Fu',
-            value: 'Elliot Fu',
-            image: { avatar: true, src: '/images/avatar/small/elliot.jpg' },
-        },
-        {
-            key: 'Stevie Feliciano',
-            text: 'Stevie Feliciano',
-            value: 'Stevie Feliciano',
-            image: { avatar: true, src: '/images/avatar/small/stevie.jpg' },
-        },
+        // {
+        //     key: 'Jenny Hess',
+        //     text: 'Jenny Hess',
+        //     value: 'Jenny Hess',
+        //     image: { avatar: true, src: '/images/avatar/small/jenny.jpg' },
+        // },
+        // {
+        //     key: 'Elliot Fu',
+        //     text: 'Elliot Fu',
+        //     value: 'Elliot Fu',
+        //     image: { avatar: true, src: '/images/avatar/small/elliot.jpg' },
+        // },
+        // {
+        //     key: 'Stevie Feliciano',
+        //     text: 'Stevie Feliciano',
+        //     value: 'Stevie Feliciano',
+        //     image: { avatar: true, src: '/images/avatar/small/stevie.jpg' },
+        // },
     ]
     
 

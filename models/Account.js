@@ -1,17 +1,16 @@
 const { model, Schema } = require('mongoose');
 
 const AccountSchema = new Schema({
-    username: String,
+    lenderName: String,
+    borrowName: String,
     createdAt:Date,
     amountOwe: [
         {
             amount: Number,
             body:String,
-            borrower: String,
-            createdAt: String
         }
     ],
-    borrower: {
+    user: {
         type: Schema.Types.ObjectId,
         ref:'users'
     }
