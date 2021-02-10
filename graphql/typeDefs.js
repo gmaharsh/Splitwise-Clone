@@ -17,11 +17,11 @@ module.exports = gql`
         id: ID!,
         email: String!,
         token: String!,
-        name: String!,
+        username: String!,
         createdAt: String!
     }
     input RegisterInput{
-        name:String!,
+        username:String!,
         password:String!,
         email:String!
     }, 
@@ -33,7 +33,7 @@ module.exports = gql`
     type Mutation{
         register(registerInput: RegisterInput) : User!
         login(email:String!, password:String!) : User!
-        addAmount(body:String!, amount:String!, name:String!) : Account!
+        addAmount(body:String!, amount:String!, username:String!) : Account!
         createComment(postId: String!, body:String!): Account!
         deleteComment(postId:String!, commentId:ID!): Account!
     }

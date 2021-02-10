@@ -9,7 +9,7 @@ function generateToken(user) {
     const token = jwt.sign({
         id: user.id,
         email: user.email,
-        name: user.name
+        username: user.username
     }, JWT_SECRET, { expiresIn: '1h' })
     return token;
 }
@@ -53,9 +53,9 @@ module.exports = {
                 token
             }
         },
-        async register(_, { registerInput: { name, email, password } }, context, info) {
+        async register(_, { registerInput: { username, email, password } }, context, info) {
 
-            const { valid, errors } = validateRegisterInput(name, email, password)
+            const { valid, errors } = validateRegisterInput(username, email, password)
             if (!valid) {
                 throw new UserInputError('Errors', {errors})
             }
@@ -64,18 +64,20 @@ module.exports = {
             if (user) {
                 throw new UserInputError('Particular Email Already Exists', {
                     errors: {
-                        username:'Particular Email Already Exists'
+                        email:'Particular Email Already Exists'
                     }
                 })
             }
             password = await bcrypt.hash(password, 12);
 
             const newUser = new User({
-                name,
+                username,
                 email,
                 password,
                 createdAt: new Date().toISOString(),
             })
+
+            console.log(newUser)
 
             const res = await newUser.save();
 

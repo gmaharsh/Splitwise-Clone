@@ -15,7 +15,7 @@ module.exports = {
         },
     },
     Mutation: {
-        addAmount: async(_, { amount, body, name}, context) => {
+        addAmount: async(_, { amount, body, username}, context) => {
             const user = checkAuth(context)
             if (body.trim() === '') {
                 throw new Error('Post body must not be empty')
@@ -23,17 +23,17 @@ module.exports = {
             if (amount.trim() === '') {
                 throw new Error('Amount must not be empty')
             }
-            const lenderName = user.name;
+            const lenderName = user.username;
             let borrowId;
             const lenderDetails = await Account.find({ lenderName })
-            const lender = await Account.findById(user._id) 
-            // console.log("Lender:-", lender)
-            const borrower = await User.find({ name })
-            // console.log("Borrower:-", borrower)
+            console.log(lenderDetails)
+            let borrower = await User.find({ username })
+            console.log(borrower[0].username)
             if (!lenderDetails) {
+                console.log("I am called")
                 const newPost = new Account({
-                    lenderName: user.name,
-                    borrowName: borrower[0].name,
+                    lenderName: user.username,
+                    borrowName: borrower[0].username,
                     amountOwe: [
                         {
                             amount,
@@ -43,21 +43,23 @@ module.exports = {
                     createdAt: new Date(),
                     user: user.id
                 });
+                
+                console.log(newPost)
 
                 const post = await newPost.save();
 
                 return post
             } else {
                 lenderDetails.map(function (value) {
-                    // console.log(value)
-                    if (value.borrowName === name) {
+                    console.log(value)
+                    if (value.borrowName === username) {
                         borrowId =  value._id
                     }
                 })
                 // console.log(borrowId)
                 if (borrowId) {
+                    console.log("I am Called")
                     const post = await Account.findById(borrowId);
-
                     if (post) {
                         post.amountOwe.unshift({
                             amount,
@@ -67,10 +69,9 @@ module.exports = {
                         return post;
                     }
                 } else {
-                    console.log("I am called")
                     const newPost = new Account({
-                        lenderName: user.name,
-                        borrowName: borrower[0].name,
+                        lenderName: user.username,
+                        borrowName: borrower[0].username,
                             amountOwe: [
                                 {
                                     amount,
