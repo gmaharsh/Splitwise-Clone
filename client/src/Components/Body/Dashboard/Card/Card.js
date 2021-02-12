@@ -1,9 +1,7 @@
 import React from 'react';
 import './Card.css';
 
-function Card({ name, owe, amount }) {
-    console.log(name)
-    console.log(owe)
+function Card({name, amount , owe}) {
     return (
         <div className="card">
             <img

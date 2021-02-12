@@ -1,33 +1,24 @@
 import React from 'react';
-import './Sidebar.css'
+import './Sidebar.css';
 
 function Sidebar() {
     return (
         <div className="sidebar">
             <div className="sidebar__upper">
                 <div className="sidebar__upper__items">
-                    <span>
-                        <img src="https://lh3.googleusercontent.com/proxy/lmjMapv6W62KO-tm9HqQuUz84BnTtE8EulZ_lXTsePR2LGFFHmaeeMEEY4u-qjLkC7o--IVFde7KOLEwUhkYr20AaS4VsGbZ-gN-exnp-5zxeTYmud8" alt="" />
-                    </span>
+                    <img src="https://www.splitwise.com/assets/press/logos/bg-primary.svg" alt="" />
                     <h3>Dashboard</h3>
                 </div>
                 <div className="sidebar__upper__items">
-                    <span>
-                        <i class="flag outline icon"></i>
-                    </span>
-                    <h3>Recent Items</h3>
+                    <i className="flag outline icon"></i>
+                    <h3>Recent Activity</h3>
                 </div>
-                <div className="sidebar__upper__items sidebar__upper__items__iput">
-                    <span>
-                        <i class="search icon" style={{ backgroundColor:"#eeeeee"}}></i>
-                    </span>
-                    
-                    <input type="text" placeholder="Filter By Name"/>
-                </div>
+                {/* <div className="sidebar__upper__items sidebar__upper__items__input ">
+                    <i className="search icon"></i>
+                    <input type="text"/>
+                </div> */}
                 <div className="sidebar__upper__items">
-                    <span>
-                        <i class="list icon"></i>
-                    </span>
+                    <i className="list icon"></i>
                     <h3>All Expenses</h3>
                 </div>
             </div>
@@ -51,7 +42,7 @@ function Sidebar() {
             <div className="sidebar__lower">
                 <div className="sidebar__headline">
                     <h4>FRIENDS</h4>
-                    <span>
+                    <span style={{display: 'flex'}}>
                         <i class="plus icon"></i>
                         Add
                     </span>
@@ -85,4 +76,4 @@ function Sidebar() {
     )
 }
 
-export default Sidebar;
+export default Sidebar

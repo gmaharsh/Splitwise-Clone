@@ -14,9 +14,9 @@ function Header() {
 
     const options = [
         { key: 'user', text: 'Mahee',value:'Mahee' },
-        { key: 'user', text: 'Create a group', as: Link, to: '/my-account' },
+        { key: 'group', text: 'Create a group', as: Link, to: '/my-account' },
         { key: 'settings', text: 'Fairness Calculator' },
-        { key: 'sign-out', text: 'Sign Out', icon: 'sign out', onClick: {logout}},
+        { key: 'sign-out', text: 'Sign Out', icon: 'sign out'},
     ]
   
     

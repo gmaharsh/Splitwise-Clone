@@ -26,7 +26,6 @@ module.exports = {
             const lenderName = user.username;
             let borrowId;
             const lenderDetails = await Account.find({ lenderName })
-            console.log(lenderDetails)
             let borrower = await User.find({ username })
             console.log(borrower[0].username)
             if (!lenderDetails) {

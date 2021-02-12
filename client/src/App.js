@@ -7,6 +7,7 @@ import Dashboard from './Components/Body/Dashboard/Dashboard';
 import Login from './Components/Authentication/Login/Login';
 import Signup from './Components/Authentication/SignUp/Signup';
 import { AuthContext, AuthProvider } from './context/auth';
+import Ads from './Components/Body/Ads/Ads';
 
 // import AuthRoute from './utils/AuthRoute';
 
@@ -23,6 +24,7 @@ function App() {
               <Route exact path="/">
                 <Sidebar />
                 <Dashboard />
+                <Ads />
               </Route>
             </div>
         </Router>

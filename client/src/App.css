@@ -1,5 +1,16 @@
 .app__body {
   display: flex;
-  /* margin: 0 auto; */
-  margin: 0px 350px;
+  /* height: 100%; */
+  /* justify-content: space-around; */
+  margin: 0 5%;
+  /* align-items: center; */
+}
+
+.body {
+  height: 100%;
+}
+@media (min-width: 768px) {
+  .app__body {
+    margin: 0 350px;
+  }
 }

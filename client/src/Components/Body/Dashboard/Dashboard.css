@@ -1,33 +1,32 @@
 .dashboard {
-  flex: 0.6;
+  flex: 1;
+  /* width: 100%; */
+  /* background: rebeccapurple; */
   height: 95vh;
-  margin-left: 20px;
+  margin: 0 20px;
   box-shadow: 0 0 12px rgb(0 0 0 / 20%);
-
-  /* margin-top: 20px; */
 }
 
 .dashboard__heading {
   display: flex;
   justify-content: space-between;
-  padding: 15px;
-  /* margin: 10px 10px; */
-  background: #eee;
+  padding: 10px;
   align-items: center;
-  border-bottom: 1px solid #ddd;
+  background: #eee;
 }
 
-.dashboard__heading > h2 {
-  margin: 0;
+.dashboard__heading > h3 {
+  font-size: 30px;
 }
 
 .dashboard__insights {
   display: flex;
-  /* margin-top: 10px; */
   justify-content: space-evenly;
+  padding: 5px 0;
+  border: 1px solid #ddd;
+  border-left: 0;
+  border-right: 0;
   background: #eee;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
 }
 
 .dashboard__insight {
@@ -41,17 +40,12 @@
 .dashboard__insight > h4 {
   margin: 0;
 }
-.dashboard__body {
-  display: flex;
-  flex-direction: column;
-  /* margin: 10px; */
-  padding: 10px 15px;
-}
 
 .body__headings {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 5px;
 }
 
 .body__headings > h3 {
@@ -59,7 +53,6 @@
   color: #999;
   font-size: 15px;
 }
-
 .body__headings__buttons {
   display: inline;
   margin-right: -50px;
@@ -80,7 +73,7 @@
 .dashboard__owe {
   width: 52%;
   border-right: 1px solid #eee;
-  /* padding-left: 13px; */
+  padding-left: 13px;
 }
 
 .dashboard__owed {
@@ -89,26 +82,34 @@
   border-left: 1px solid #eee;
 }
 
-.model__content {
-  padding: 0.5rem !important;
-}
+@media (max-width: 1300px) {
+  .dashboard__heading > h3 {
+    font-size: 20px;
+  }
+  .dashboard__buttons {
+    display: flex;
+  }
+  .dashboard__insight > h4 {
+    margin: 0;
+    font-size: 9px;
+  }
+  .body__headings {
+    /* display: flex; */
+    justify-content: space-evenly;
+    /* align-items: center; */
+    /* padding: 5px; */
+  }
 
-.model__content > input {
-  border: none;
-  width: 70%;
-  outline: none;
-}
-
-.model__contentdescription > input {
-  border: none;
-  width: 100%;
-  outline: none;
-  padding: 0.5rem !important;
-  border-bottom: 3px dashed #eee;
-  margin-bottom: 0.5rem;
-}
-
-.model__contentbuttons {
-  padding: 0.5rem !important;
-  text-align: center;
+  .body__headings__buttons > .ui.button {
+    margin: 0;
+    border: none;
+    border-radius: 3px !important;
+    size: 10px;
+    font-size: 7px;
+  }
+  .body__headings > h3 {
+    margin: 0;
+    color: #999;
+    font-size: 8px;
+  }
 }
