@@ -4,11 +4,14 @@ const mongoose = require('mongoose');
 const { MONGODB } = require('./config');
 const resolvers =  require('./graphql/resolvers/index');
 const typeDefs = require('./graphql/typeDefs');
+const cors = require('cors')
+
+
 
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: ({ req }) => ({ req })
+    context: ({ req }) => ({req})
 })
 
 //Database Connection

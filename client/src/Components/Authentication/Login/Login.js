@@ -20,7 +20,7 @@ function Login(props) {
             context.login(userData)
             props.history.push('/')
         }, onError(err) {
-            setErrors(err.graphQLErrors[0].extensions.exception.errors);
+            setErrors(err&&err.graphQLErrors[0]?err.graphQLErrors[0].extensions.exception.errors:{});
         },
         variables:values
     })
@@ -88,7 +88,7 @@ const LOGIN_USER = gql`
     login(email: $email, password: $password) {
       id
       email
-      name
+      username
       createdAt
       token
     }

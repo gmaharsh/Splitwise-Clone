@@ -21,7 +21,7 @@ function Signup(props) {
             context.register(userData)
             props.history.push('/')
         },onError(err) {
-            setErrors(err.graphQLErrors[0].extensions.exception.errors);
+            // setErrors(err.graphQLErrors[0].extensions.exception.errors);
         },
         variables:values
     })

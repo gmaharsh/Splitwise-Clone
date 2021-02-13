@@ -1,22 +1,47 @@
-import { useQuery } from '@apollo/react-hooks';
-import React, { useState } from 'react';
-import { Button, Dropdown, MenuItem, Modal, Select } from 'semantic-ui-react';
+import { gql, useMutation, useQuery } from '@apollo/react-hooks';
+import React, { useContext, useState } from 'react';
+import { Button, Dropdown, Icon, MenuItem, Modal, Select } from 'semantic-ui-react';
+import { AuthContext } from '../../../context/auth';
 import { FETCH_USERS_QUERY } from '../../../utils/graphql';
 import Card from './Card/Card';
 import './Dashboard.css';
 
-function Dashboard() {
+function Dashboard({props}) {
 
-    const [open, setOpen] = useState(false);
-    const [name, setName] = useState("")
-    const [search, setSearch] = useState("");
-    const [userData, setUserData] = useState("");
+    const user = useContext(AuthContext)
+    console.log("User from dashboard", user.user);
+    const [firstOpen, setFirstOpen] = useState(false)
+    const [secondOpen, setSecondOpen] = useState(false)
 
-    const { loading, data} = useQuery(FETCH_USERS_QUERY)
-    const addBills = () => {
-        console.log(name)
-        setOpen(false)
+    const [values, setValues] = useState({
+        body: "",
+        amount: "",
+        username: ""
+    });
+
+    const changeValues = (event) => {
+        setValues({ ...values, [event.target.name]: event.target.value })
     }
+
+    const { loading, data } = useQuery(FETCH_USERS_QUERY)
+
+    const [addBills, { error }] = useMutation(ADD_TRANSACTION, {
+        variables: values,
+        update(_, result) {
+            console.log(result)
+            values.body = '';
+            values.amount = '';
+            values.username = '';
+        }
+    })
+
+    const submitForm = (e) => {
+        e.preventDefault();
+        // setOpen(false)
+        addBills();
+    }
+
+    console.log(values)
 
     const friendOptions = [ ]
 
@@ -25,93 +50,117 @@ function Dashboard() {
             <div className="dashboard__heading">
                 <h3>Dashboard</h3>
                 <div className="dashboard__buttons">
-                    <Modal
-                        size='tiny'
-                        onClose={() => setOpen(false)}
-                        onOpen={() => setOpen(true)}
-                        open={open}
-                        trigger={<button class="medium ui orange button">
-                        Add an Expense
-                    </button>}
-                    >
-                    <Modal.Header>Add an Expense</Modal.Header>
-                    <Modal.Content className="model__content">
-                            With you and :
-                             <input
-                                placeholder="Enter your friend's name"
-                                onChange={(e) => setName(e.target.value)}
-                            />
-                            {userData &&
-                                        <Select
-                                            
-                                            onChange={(e) => setSearch(e.target.value)}
+                    {user.user && (
+                        <> 
+                            <button class="medium ui orange button" onClick={() => setFirstOpen(true)}>Add an Expense</button>
+                            <button class="medium ui teal button" onClick={() => setSecondOpen(true)}>Settle Up</button>
+                            <Modal
+                                size="tiny"
+                                onClose={() => setFirstOpen(false)}
+                                onOpen={() => setFirstOpen(true)}
+                                open={firstOpen}
+                            >
+                                <Modal.Header>Add an Expense</Modal.Header>
+                                <Modal.Content className="model__content">
+                                        With you and :
+                                        <input
+                                            placeholder="Enter your friend's name"
+                                            name="username"
+                                            value={values.username}
+                                            onChange={changeValues}
+                                        />
+                                </Modal.Content>
+                                <hr />
+                                <Modal.Content className="model__contentdescription divider">
+                                        <input
+                                            placeholder="Enter a description"
+                                            name="body"
+                                            value={values.body}
+                                            onChange={changeValues}
+                                        />
+                                        <input
+                                            placeholder="Enter an amount"
+                                            name="amount"
+                                            value={values.amount}
+                                            onChange={changeValues}
+                                        />
+                                </Modal.Content>
+                                <Modal.Content className="model__contentbuttons">
+                                        Paid by 
+                                        <Dropdown
+                                            text='Add user'
+                                            labeled
+                                            button
+                                            className='icon'
+                                            style={{ marginLeft: '10px' }}
                                         >
-                                            {userData && userData.map((option) => (
-                                            <MenuItem
-                                                key={option._id}
-                                                value={option._id}
-                                            >
-                                                {option.name}
-                                            </MenuItem>
-                                    ))}
-                                        </Select>
-                                    }
-                    </Modal.Content>
-                    <hr />
-                    <Modal.Content className="model__contentdescription divider">
-                            <input
-                                placeholder="Enter a description"
-                            />
-                            <input
-                                placeholder="Enter a amount"
-                            />
-                    </Modal.Content>
-                    <Modal.Content className="model__contentbuttons">
-                            Paid by 
-                            <Dropdown
-                                text='Add user'
-                                labeled
-                                button
-                                className='icon'
-                                style={{ marginLeft: '10px' }}
+                                            <Dropdown.Menu>
+                                            <Dropdown.Header content='People You Might Know' />
+                                            {friendOptions.map((option) => (
+                                                <Dropdown.Item key={option.value} {...option} />
+                                            ))}
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                        and split
+                                        <Dropdown
+                                            text='Add user'
+                                            labeled
+                                            button
+                                            className='icon'
+                                            style={{ marginLeft: '10px' }}
+                                        >
+                                            <Dropdown.Menu>
+                                            <Dropdown.Header content='People You Might Know' />
+                                            {friendOptions.map((option) => (
+                                                <Dropdown.Item key={option.value} {...option} />
+                                            ))}
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                </Modal.Content>    
+                                <Modal.Actions>
+                                        <Button
+                                            color='black'
+                                            onClick={() => setFirstOpen(false)}>
+                                        Cancel
+                                        </Button>
+                                        <Button
+                                            content="Save"
+                                            onClick={submitForm}
+                                            positive
+                                        />
+                                </Modal.Actions>
+                            </Modal>
+                           <Modal
+                                size="tiny"
+                                onClose={() => setSecondOpen(false)}
+                                onOpen={() => setSecondOpen(true)}
+                                open={secondOpen}
                             >
-                                <Dropdown.Menu>
-                                <Dropdown.Header content='People You Might Know' />
-                                {friendOptions.map((option) => (
-                                    <Dropdown.Item key={option.value} {...option} />
-                                ))}
-                                </Dropdown.Menu>
-                            </Dropdown>
-                            and split
-                            <Dropdown
-                                text='Add user'
-                                labeled
-                                button
-                                className='icon'
-                                style={{ marginLeft: '10px' }}
-                            >
-                                <Dropdown.Menu>
-                                <Dropdown.Header content='People You Might Know' />
-                                {friendOptions.map((option) => (
-                                    <Dropdown.Item key={option.value} {...option} />
-                                ))}
-                                </Dropdown.Menu>
-                            </Dropdown>
-                    </Modal.Content>    
-                    <Modal.Actions>
-                            <Button
-                                color='black'
-                                onClick={() => setOpen(false)}>
-                            Cancel
-                            </Button>
-                            <Button
-                                content="Save"
-                                onClick={addBills}
-                                positive
-                            />
-                    </Modal.Actions>
-                    </Modal>
-                    <button className="tiny ui olive button" >Settle Up</button>
+                                <Modal.Header>Settle Up</Modal.Header>
+                                
+                                <Modal.Content className="model__contentdescription divider" style={{ textAlign: 'center' }} >
+                                    Choose a payment method
+                                </Modal.Content>
+                                <Modal.Content className="model__contentbuttons" style={{ display: 'flex', flexDirection: 'column', paddingTop:'20px'}}>
+                                    <Button color='green'>Record a cash payment </Button>
+                                    <Button style={{ margin: '20px 0' }}> <Icon name='paypal' /> Paypal</Button>
+                                    Note: PayPal payments via debit or credit card incur fees of up to 4%. Venmo payments via credit card incur fees of 3%. Visit PayPal.com or Venmo.com for details.
+                                </Modal.Content>    
+                                <Modal.Actions>
+                                    <Button
+                                        color='black'
+                                        onClick={() => setSecondOpen(false)}>
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        content="Save"
+                                        // onClick={submitForm}
+                                        positive
+                                    />
+                                </Modal.Actions>
+                            </Modal>
+                        </>
+                    )}
                 </div>
             </div>
             <div className="dashboard__insights">
@@ -156,6 +205,28 @@ function Dashboard() {
         </div>
     )
 }
+
+const ADD_TRANSACTION = gql`
+  mutation addAmount(
+    $body:String!, 
+    $amount:String!, 
+    $username:String!
+  ) {
+    addAmount(
+      body: $body,
+      amount :$amount,
+      username: $username
+    ) {
+        lenderName
+        amountOwe{
+            body
+            amount
+        }
+        createdAt
+    }
+  }
+`;
+
 
 
 

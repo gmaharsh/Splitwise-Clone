@@ -3,11 +3,13 @@ const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config')
 
 module.exports = (context) => {
+    console.log(context.req.headers)
     const authHeader = context.req.headers.authorization;
-
+    // console.log(authHeader)
     if (authHeader) {
         //Bearer...
         const token = authHeader.split('Bearer ')[1];
+
         if (token) {
             try {
                 const user = jwt.verify(token, JWT_SECRET);

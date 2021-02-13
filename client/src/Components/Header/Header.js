@@ -14,12 +14,11 @@ function Header() {
 
     const options = [
         { key: 'user', text: 'Mahee',value:'Mahee' },
-        { key: 'group', text: 'Create a group', as: Link, to: '/my-account' },
-        { key: 'settings', text: 'Fairness Calculator' },
-        { key: 'sign-out', text: 'Sign Out', icon: 'sign out'},
+        { key: 'group', text: 'Login', as: Link, to: '/login' },
+        // { key: 'settings', text: 'Fairness Calculator' },
+        { key: 'sign-out', text: 'Sign Out', icon: 'sign out', as: Link, to: '/login' },
     ]
-  
-    
+
     return (
         <div className="header">
             <Menu borderless inverted style={{ paddingRight:'40vh', paddingLeft:'40vh'}}>
