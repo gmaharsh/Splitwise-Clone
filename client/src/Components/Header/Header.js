@@ -16,7 +16,7 @@ function Header() {
         { key: 'user', text: 'Mahee',value:'Mahee' },
         { key: 'group', text: 'Login', as: Link, to: '/login' },
         // { key: 'settings', text: 'Fairness Calculator' },
-        { key: 'sign-out', text: 'Sign Out', icon: 'sign out', as: Link, to: '/login' },
+        { key: 'sign-out', text: 'Sign Out', icon: 'sign out', as: Link, to: '/logout' },
     ]
 
     return (

@@ -12,7 +12,7 @@ function Dashboard({props}) {
     console.log("User from dashboard", user.user);
     const [firstOpen, setFirstOpen] = useState(false)
     const [secondOpen, setSecondOpen] = useState(false)
-
+    const [thirdOpen, setThirdOpen] = useState(false) 
     const [values, setValues] = useState({
         body: "",
         amount: "",
@@ -34,6 +34,11 @@ function Dashboard({props}) {
             values.username = '';
         }
     })
+
+    const submitPayment = () => {
+        setSecondOpen(false)
+        setThirdOpen(false)
+    }
 
     const submitForm = (e) => {
         e.preventDefault();
@@ -130,7 +135,7 @@ function Dashboard({props}) {
                                         />
                                 </Modal.Actions>
                             </Modal>
-                           <Modal
+                            <Modal
                                 size="tiny"
                                 onClose={() => setSecondOpen(false)}
                                 onOpen={() => setSecondOpen(true)}
@@ -142,7 +147,7 @@ function Dashboard({props}) {
                                     Choose a payment method
                                 </Modal.Content>
                                 <Modal.Content className="model__contentbuttons" style={{ display: 'flex', flexDirection: 'column', paddingTop:'20px'}}>
-                                    <Button color='green'>Record a cash payment </Button>
+                                    <Button color='green' onClick={() => setThirdOpen(true)} >Record a cash payment </Button>
                                     <Button style={{ margin: '20px 0' }}> <Icon name='paypal' /> Paypal</Button>
                                     Note: PayPal payments via debit or credit card incur fees of up to 4%. Venmo payments via credit card incur fees of 3%. Visit PayPal.com or Venmo.com for details.
                                 </Modal.Content>    
@@ -152,6 +157,38 @@ function Dashboard({props}) {
                                         onClick={() => setSecondOpen(false)}>
                                         Cancel
                                     </Button>
+                                    <Button
+                                        content="Save"
+                                        onClick={() => setThirdOpen(true)} 
+                                        // onClick={submitForm}
+                                        positive
+                                    />
+                                </Modal.Actions>
+                            </Modal>
+                            <Modal
+                                onClose={() => setThirdOpen(false)}
+                                open={thirdOpen}
+                                size='small'
+                            >
+                                <Modal.Header>Settle Up the Payment</Modal.Header>
+                                
+                                <Modal.Content className="model__contentdescription divider" style={{ textAlign: 'center' }} >
+                                    You Paid pragya
+                                </Modal.Content>
+                                <Modal.Content className="model__contentdescription" style={{ display: 'flex', flexDirection: 'column', paddingTop:'20px'}}>
+                                   <input
+                                        placeholder="Enter an amount"
+                                        name="amount"
+                                        value={values.amount}
+                                        onChange={changeValues}
+                                    />
+                                </Modal.Content>    
+                                <Modal.Actions>
+                                    <Button
+                                        // icon='Cancel'
+                                        content='Cancel'
+                                        onClick={submitPayment}
+                                    />
                                     <Button
                                         content="Save"
                                         // onClick={submitForm}
