@@ -1,7 +1,14 @@
+import { useQuery } from '@apollo/react-hooks';
 import React from 'react';
+import { FETCH_USERS_QUERY } from '../../../utils/graphql';
 import './Sidebar.css';
 
 function Sidebar() {
+
+    const { loading, data } = useQuery(FETCH_USERS_QUERY);
+
+    console.log("Data from sidebar", data)
+
     return (
         <div className="sidebar">
             <div className="sidebar__upper">
@@ -13,10 +20,10 @@ function Sidebar() {
                     <i className="flag outline icon"></i>
                     <h3>Recent Activity</h3>
                 </div>
-                {/* <div className="sidebar__upper__items sidebar__upper__items__input ">
+                <div className="sidebar__upper__items sidebar__upper__items__input">
                     <i className="search icon"></i>
-                    <input type="text"/>
-                </div> */}
+                    <input type="text" placeholder="Filter by name"/>
+                </div>
                 <div className="sidebar__upper__items">
                     <i className="list icon"></i>
                     <h3>All Expenses</h3>
@@ -47,30 +54,12 @@ function Sidebar() {
                         Add
                     </span>
                 </div>
-                <div className="sidebar__items">
-                    <i class="user icon"></i>
-                    <h3>Elon Musk</h3>
-                </div>
-                <div className="sidebar__items">
-                    <i class="user icon"></i>
-                    <h3>Mark</h3>
-                </div>
-                <div className="sidebar__items">
-                    <i class="user icon"></i>
-                    <h3>Sundar Pichai</h3>
-                </div>
-                <div className="sidebar__items">
-                    <i class="user icon"></i>
-                    <h3>Mary Barra</h3>
-                </div>
-                <div className="sidebar__items">
-                    <i class="user icon"></i>
-                    <h3>Jack Ma</h3>
-                </div>
-                <div className="sidebar__items">
-                    <i class="user icon"></i>
-                    <h3>Susan Wojcicki</h3>
-                </div>
+                {data && data.getUsers.map(user => (
+                    <div className="sidebar__items">
+                        <i class="user icon"></i>
+                        <h3>{user.username}</h3>
+                    </div>
+                ))}
             </div>
         </div>
     )

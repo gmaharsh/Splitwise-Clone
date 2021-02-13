@@ -1,8 +1,9 @@
 .app__body {
   display: flex;
+  /* background-color: red; */
   /* height: 100%; */
   /* justify-content: space-around; */
-  margin: 0 5%;
+  /* margin: 0 5%; */
   /* align-items: center; */
 }
 
@@ -11,6 +12,6 @@
 }
 @media (min-width: 768px) {
   .app__body {
-    margin: 0 350px;
+    margin: 0 300px;
   }
 }

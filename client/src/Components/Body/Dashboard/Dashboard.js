@@ -1,15 +1,116 @@
-import React from 'react';
-import { Button } from 'semantic-ui-react';
+import { useQuery } from '@apollo/react-hooks';
+import React, { useState } from 'react';
+import { Button, Dropdown, MenuItem, Modal, Select } from 'semantic-ui-react';
+import { FETCH_USERS_QUERY } from '../../../utils/graphql';
 import Card from './Card/Card';
 import './Dashboard.css';
 
 function Dashboard() {
+
+    const [open, setOpen] = useState(false);
+    const [name, setName] = useState("")
+    const [search, setSearch] = useState("");
+    const [userData, setUserData] = useState("");
+
+    const { loading, data} = useQuery(FETCH_USERS_QUERY)
+    const addBills = () => {
+        console.log(name)
+        setOpen(false)
+    }
+
+    const friendOptions = [ ]
+
     return (
         <div className="dashboard">
             <div className="dashboard__heading">
                 <h3>Dashboard</h3>
                 <div className="dashboard__buttons">
-                    <button className="tiny ui orange button" size="tiny" >Add an Expense</button>
+                    <Modal
+                        size='tiny'
+                        onClose={() => setOpen(false)}
+                        onOpen={() => setOpen(true)}
+                        open={open}
+                        trigger={<button class="medium ui orange button">
+                        Add an Expense
+                    </button>}
+                    >
+                    <Modal.Header>Add an Expense</Modal.Header>
+                    <Modal.Content className="model__content">
+                            With you and :
+                             <input
+                                placeholder="Enter your friend's name"
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                            {userData &&
+                                        <Select
+                                            
+                                            onChange={(e) => setSearch(e.target.value)}
+                                        >
+                                            {userData && userData.map((option) => (
+                                            <MenuItem
+                                                key={option._id}
+                                                value={option._id}
+                                            >
+                                                {option.name}
+                                            </MenuItem>
+                                    ))}
+                                        </Select>
+                                    }
+                    </Modal.Content>
+                    <hr />
+                    <Modal.Content className="model__contentdescription divider">
+                            <input
+                                placeholder="Enter a description"
+                            />
+                            <input
+                                placeholder="Enter a amount"
+                            />
+                    </Modal.Content>
+                    <Modal.Content className="model__contentbuttons">
+                            Paid by 
+                            <Dropdown
+                                text='Add user'
+                                labeled
+                                button
+                                className='icon'
+                                style={{ marginLeft: '10px' }}
+                            >
+                                <Dropdown.Menu>
+                                <Dropdown.Header content='People You Might Know' />
+                                {friendOptions.map((option) => (
+                                    <Dropdown.Item key={option.value} {...option} />
+                                ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            and split
+                            <Dropdown
+                                text='Add user'
+                                labeled
+                                button
+                                className='icon'
+                                style={{ marginLeft: '10px' }}
+                            >
+                                <Dropdown.Menu>
+                                <Dropdown.Header content='People You Might Know' />
+                                {friendOptions.map((option) => (
+                                    <Dropdown.Item key={option.value} {...option} />
+                                ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                    </Modal.Content>    
+                    <Modal.Actions>
+                            <Button
+                                color='black'
+                                onClick={() => setOpen(false)}>
+                            Cancel
+                            </Button>
+                            <Button
+                                content="Save"
+                                onClick={addBills}
+                                positive
+                            />
+                    </Modal.Actions>
+                    </Modal>
                     <button className="tiny ui olive button" >Settle Up</button>
                 </div>
             </div>
@@ -55,5 +156,7 @@ function Dashboard() {
         </div>
     )
 }
+
+
 
 export default Dashboard
