@@ -9,7 +9,7 @@ import Sidebar from './Sidebar/Sidebar'
 
 function Body() {
     const user = useContext(AuthContext)
-    console.log(user.user)
+    // console.log(user.user)
     return (
         <div className="body">
             {user.user ? (

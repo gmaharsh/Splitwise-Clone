@@ -8,16 +8,24 @@ import { AuthContext } from '../../context/auth';
 
 function Header() {
 
-    const { user, logout} = useContext(AuthContext)
+    const { user, logout } = useContext(AuthContext)
+    console.log(user)
     const [activeItem, setActiveItem] = useState('');
     const handleItemClick = (e, { name }) => setActiveItem(name)
 
+    let username = "";
+    if (user) {
+        username = user.username
+    }
+
     const options = [
-        { key: 'user', text: 'Mahee',value:'Mahee' },
-        { key: 'group', text: 'Login', as: Link, to: '/login' },
-        // { key: 'settings', text: 'Fairness Calculator' },
+        { key: 'user', text: username, value:username },
         { key: 'sign-out', text: 'Sign Out', icon: 'sign out', as: Link, to: '/logout' },
     ]
+    const userNotOptions = [
+        { key: 'group', text: 'Login', as: Link, to: '/login' },
+        { key: 'group', text: 'Signup', as: Link, to: '/Signup' }
+     ]
 
     return (
         <div className="header">
@@ -29,12 +37,18 @@ function Header() {
                         active={activeItem === 'friends'}
                         onClick={handleItemClick}
                     >
-                        <img src="https://i1.rgstatic.net/ii/profile.image/610169692123136-1522487199639_Q512/Maharsh_Gheewala.jpg" style={{ borderRadius:'30px', width:'3vh', marginRight:'20px'}} alt="" />
+                        {/* <img src="https://i1.rgstatic.net/ii/profile.image/610169692123136-1522487199639_Q512/Maharsh_Gheewala.jpg" style={{ borderRadius:'30px', width:'3vh', marginRight:'20px'}} alt="" /> */}
+                        {user ? (
                             <Dropdown
                                 inline
                                 options={options}
                                 defaultValue={options[0].value}
-                            />
+                            />):(<Dropdown
+                                inline
+                                options={userNotOptions}
+                                defaultValue={userNotOptions[0].value}
+                            />)}
+                            
                     </Menu.Item>
                  </Menu.Menu>
             </Menu>
