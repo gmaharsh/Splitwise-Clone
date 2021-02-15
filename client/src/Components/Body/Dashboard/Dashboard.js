@@ -1,5 +1,5 @@
 import { gql, useMutation, useQuery } from '@apollo/react-hooks';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, Dropdown, Icon, MenuItem, Modal, Select } from 'semantic-ui-react';
 import { AuthContext } from '../../../context/auth';
 import { FETCH_USERS_QUERY } from '../../../utils/graphql';
@@ -9,10 +9,11 @@ import './Dashboard.css';
 function Dashboard({props}) {
 
     const user = useContext(AuthContext)
-    console.log("User from dashboard", user.user);
+    const [owe, setOwe] = useState([])
+    const [owed, setOwed] = useState([])
     const [firstOpen, setFirstOpen] = useState(false)
     const [secondOpen, setSecondOpen] = useState(false)
-    const [thirdOpen, setThirdOpen] = useState(false) 
+    const [thirdOpen, setThirdOpen] = useState(false)
     const [values, setValues] = useState({
         body: "",
         amount: "",
@@ -22,9 +23,26 @@ function Dashboard({props}) {
     const changeValues = (event) => {
         setValues({ ...values, [event.target.name]: event.target.value })
     }
+    const { data } = useQuery(FETCH_POSTS_QUERY, { 
+        variables: { 
+            username: user.user.username
+        }
+    })
 
-    const { loading, data } = useQuery(FETCH_USERS_QUERY)
+    useEffect(() => {
+        if (data) {
+            data.getAccountDetails.map(account => {
+                if (account.amountOweCount > 0) {
+                    setOwed(prevState => [...prevState, {account}])
+                } else {
+                    setOwe(prevState => [...prevState, {account}])
+                }
+            })
+        }
+    }, [data])
 
+    
+    console.log(owed)
     const [addBills, { error }] = useMutation(ADD_TRANSACTION, {
         variables: values,
         update(_, result) {
@@ -42,11 +60,10 @@ function Dashboard({props}) {
 
     const submitForm = (e) => {
         e.preventDefault();
-        // setOpen(false)
+        setFirstOpen(false)
         addBills();
     }
 
-    console.log(values)
 
     const friendOptions = [ ]
 
@@ -231,11 +248,14 @@ function Dashboard({props}) {
                 </div>
                 <div className="dashboard__accounts">
                     <div className="dashboard__owe">
-                        <Card name="Pragya Agarwal" amount="500" owe={true} />
+                        {data && owe.map(account => (
+                            <Card name={account.account.borrowName} amount={account.account.amountOweCount} owe={true} />
+                        ))}
                     </div>
                     <div className="dashboard__owed">
-                        <Card name="Harshit" amount="700" owe={false} />
-                        <Card name="Rachana" amount="7010" owe={false} />
+                        {data && owed.map(account => (
+                            <Card name={account.account.borrowName} amount={account.account.amountOweCount} owe={false} />
+                        ))}
                     </div>
                 </div>
             </div>
@@ -262,6 +282,15 @@ const ADD_TRANSACTION = gql`
         createdAt
     }
   }
+`;
+
+const FETCH_POSTS_QUERY = gql`
+    query($username: String!){
+        getAccountDetails(username: $username){
+            borrowName
+            amountOweCount
+        }
+    }
 `;
 
 

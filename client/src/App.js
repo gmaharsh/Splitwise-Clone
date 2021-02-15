@@ -15,7 +15,6 @@ import { useContext } from 'react';
 function App() {
 
   const { user, logout } = useContext(AuthContext)
-  console.log(user)
 
   return (
     <AuthProvider>

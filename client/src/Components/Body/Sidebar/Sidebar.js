@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/react-hooks';
-import React from 'react';
+import React, { useState } from 'react';
 import { FETCH_USERS_QUERY } from '../../../utils/graphql';
 import './Sidebar.css';
 
@@ -7,12 +7,12 @@ function Sidebar() {
 
     const { loading, data } = useQuery(FETCH_USERS_QUERY);
 
-    console.log("Data from sidebar", data)
+    const [active, setActive] = useState(false)
 
     return (
         <div className="sidebar">
             <div className="sidebar__upper">
-                <div className="sidebar__upper__items">
+                <div className="sidebar__upper__items" style={{borderLeft: '5px solid #5bc5a7'}}>
                     <img src="https://www.splitwise.com/assets/press/logos/bg-primary.svg" alt="" />
                     <h3>Dashboard</h3>
                 </div>
@@ -37,11 +37,11 @@ function Sidebar() {
                         Add
                     </span>
                 </div>
-                <div className="sidebar__items">
+                <div className="sidebar__upper__items">
                     <i class="tag icon"></i>
                     <h3>Home</h3>
                 </div>
-                <div className="sidebar__items">
+                <div className="sidebar__upper__items">
                     <i class="tag icon"></i>
                     <h3>Friends</h3>
                 </div>
@@ -55,11 +55,12 @@ function Sidebar() {
                     </span>
                 </div>
                 {data && data.getUsers.map(user => (
-                    <div className="sidebar__items">
+                    <div className="sidebar__upper__items">
                         <i class="user icon"></i>
                         <h3>{user.username}</h3>
                     </div>
                 ))}
+
             </div>
         </div>
     )

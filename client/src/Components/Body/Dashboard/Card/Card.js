@@ -1,9 +1,10 @@
 import React from 'react';
 import './Card.css';
 
-function Card({name, amount , owe}) {
+function Card({ name, amount, owe }) {
+    // console.log("Name:-", name)
     return (
-        <div className="card">
+        <div className="card">  
             <img
                 class="ui avatar image"
                 src="https://i1.rgstatic.net/ii/profile.image/610169692123136-1522487199639_Q512/Maharsh_Gheewala.jpg"

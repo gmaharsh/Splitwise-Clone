@@ -1,15 +1,29 @@
 .sidebar {
   width: 100%;
   flex: 0.4;
+  /* background: white; */
+  cursor: pointer;
+  background: transparent !important;
 }
+
 .sidebar__upper__items {
   display: flex;
   align-items: center;
   margin-top: 10px;
 }
 
+.sidebar__upper__items:hover {
+  background-color: #eee;
+  color: white;
+}
+
+.sidebar__items :hover {
+  background-color: #eee;
+}
+
 .sidebar__upper__items > img {
   width: 2vh;
+  margin-left: 7px;
 }
 .sidebar__upper__items > input {
   outline: none;

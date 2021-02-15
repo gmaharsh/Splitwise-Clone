@@ -7,6 +7,7 @@ module.exports = gql`
         createdAt:String!,
         borrowName: String!,
         amountOwe:[owe]!
+        amountOweCount: String!,
     },
     type owe{
         id:ID!
@@ -28,7 +29,7 @@ module.exports = gql`
     type Query{
         getPosts:[Account]
         getUsers:[User]
-        getAccountDetails(userID: ID!):Account
+        getAccountDetails(username: String!):[Account]
     },
     type Mutation{
         register(registerInput: RegisterInput) : User!
