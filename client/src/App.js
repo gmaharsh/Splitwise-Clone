@@ -15,15 +15,17 @@ import { useContext } from 'react';
 function App() {
 
   const { user, logout } = useContext(AuthContext)
+  console.log(user)
 
   return (
     <AuthProvider>
+
       <div className="App">
         <Router>
         <Header /> 
           <Route exact path="/" component={Body} />
-          <AuthRoute exact path="/Signup" component={Signup} />
-          <AuthRoute exact path="/login" component={Login} />
+          <Route exact path="/Signup" component={Signup} />
+          <Route exact path="/login" component={Login} />
         </Router>
       </div>
     </AuthProvider>
