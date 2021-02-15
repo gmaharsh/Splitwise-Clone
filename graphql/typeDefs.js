@@ -3,16 +3,19 @@ const { gql } = require('apollo-server');
 module.exports = gql`
     type Account{
         id:ID!,
-        lenderName:String!,
-        createdAt:String!,
-        borrowName: String!,
+        user1:String!,
+        user2: String!,
         amountOwe:[owe]!
-        amountOweCount: String!,
+        user1OweCount: Int!,
+        user2OweCount: Int!,
+        createdAt:String!,
     },
     type owe{
         id:ID!
         amount:Int!
         body:String!
+        lenderName: String!
+        borrowerName: String!
     }
     type User{
         id: ID!,

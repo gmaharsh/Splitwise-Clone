@@ -2,16 +2,19 @@ const { model, Schema } = require('mongoose');
 
 const AccountSchema = new Schema({
     id:String,
-    lenderName: String,
-    borrowName: String,
+    user1: String,
+    user2: String,
     createdAt:Date,
     amountOwe: [
         {
             amount: Number,
-            body:String,
+            body: String,
+            lenderName: String,
+            borrowerName: String,
         }
     ],
-    amountOweCount: String,
+    user1OweCount: Number,
+    user2OweCount: Number,
     user: {
         type: Schema.Types.ObjectId,
         ref:'users'

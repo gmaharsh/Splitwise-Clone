@@ -28,87 +28,88 @@ module.exports = {
     Mutation: {
         addAmount: async(_, { amount, body, username}, context) => {
             const user = checkAuth(context)
-            // console.log(user)
             if (body.trim() === '') {
                 throw new Error('Post body must not be empty')
             }
             if (amount.trim() === '') {
                 throw new Error('Amount must not be empty')
             }
-            const lenderName = user.username;
-            let borrowId;
-            const lenderDetails = await Account.find({ lenderName })
-            let borrower = await User.find({ username })
-            console.log(borrower[0].username)
-            if (!lenderDetails) {
-                console.log("I am called")
+
+            let user1 = user.username;
+            let user2 = username;
+            let postId = ""
+            let u1 = await Account.find({ user1 })
+            if (u1) {
+                u1.map(user => {
+                    if (user.user2 == user2) {
+                        postId = user._id
+                    }
+                })
+            }
+            let u2 = await Account.find({ user2: user1 })
+            if (u2) {
+                u2.map(user => {
+                    if (user.user1 == user2) {
+                        postId = user._id
+                    }
+                })
+            }
+            
+
+            if (!postId) {
+                console.log("No Transaction Found for this user")
                 const newPost = new Account({
-                    lenderName: user.username,
-                    borrowName: borrower[0].username,
+                    user1: user1,
+                    user2: user2,
                     amountOwe: [
                         {
                             amount,
                             body,
+                            lenderName: user1,
+                            borrowerName: user2
                         }
                     ],
-                    amountOweCount: amount,
+                    user1OweCount: amount,
+                    user2OweCount: -amount,
                     createdAt: new Date(),
                     user: user.id
                 });
                 
-                // console.log(newPost)
-
-                const post = await newPost.save();
-
-                return post
+                console.log(newPost)
             } else {
-                // console.log("lenderDetails:-", lenderDetails)
-                // newAmount = amount + previousAmount;
-                prevAmount = 0;
-                lenderDetails.map(function (value) {
-                    // console.log(value)
-                    
-                    if (value.borrowName === username) {
-                        borrowId = value._id
-                        value.amountOwe.map(amount => {
-                            prevAmount += amount.amount;
-                        })
-                    }
-                })
-                console.log(typeof(amount))
-                console.log(typeof(prevAmount.toString()))
-                let newAmount = prevAmount + parseInt(amount)
-                console.log("newAmount", newAmount)
-                if (borrowId) {
-                    // console.log("I am Called")
-                    const post = await Account.findById(borrowId);
-                    console.log(post)
-                    if (post) {
-                        post.amountOwe.unshift({
-                            amount,
-                            body,
-                        })
-                        post.amountOweCount = newAmount
-                        await post.save();
-                        return post;
-                    }
+                const post = await Account.findById(postId)
+                let newUser1OweCount = post.user1OweCount;
+                let newUser2OweCount = post.user2OweCount;
+                if (post.user1 == user1) {
+                    newUser1OweCount += parseInt(amount);
+                    newUser2OweCount -= parseInt(amount);
+                    console.log(newUser1OweCount)
+                    console.log(newUser2OweCount)
+                    post.amountOwe.unshift({
+                        amount,
+                        body,
+                        lenderName: user1,
+                        borrowerName: user2
+                    })
+                    post.user1OweCount = newUser1OweCount
+                    post.user2OweCount = newUser2OweCount
+                    await post.save();
+                    return post;
                 } else {
-                    const newPost = new Account({
-                        lenderName: user.username,
-                        borrowName: borrower[0].username,
-                        amountOwe: [
-                            {
-                                amount,
-                                body,
-                            }
-                        ],
-                        amountOweCount: amount,
-                        createdAt: new Date(),
-                        user: user.id
-                    });
-                    const post = await newPost.save();
-
-                    return post
+                    console.log("Different User Adding Transaction")
+                    let newUser1OweCount = post.user2OweCount;
+                    let newUser2OweCount = post.user1OweCount;
+                    newUser1OweCount += parseInt(amount);
+                    newUser2OweCount -= parseInt(amount);
+                    post.amountOwe.unshift({
+                        amount,
+                        body,
+                        lenderName: user1,
+                        borrowerName: user2
+                    })
+                    post.user1OweCount = newUser2OweCount
+                    post.user2OweCount = newUser1OweCount
+                    
                 }
             }
         }

@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from '@apollo/react-hooks';
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Dropdown, Form, Icon, Input, MenuItem, Modal, Select } from 'semantic-ui-react';
+import { Button, Dropdown, Form, Icon, Input, MenuItem, Modal, Popup, Select } from 'semantic-ui-react';
 import { AuthContext } from '../../../context/auth';
 import { FETCH_USERS_QUERY } from '../../../utils/graphql';
 import Card from './Card/Card';
@@ -9,7 +9,7 @@ import './Dashboard.css';
 function Dashboard({props}) {
 
     const user = useContext(AuthContext)
-    console.log(user.user.username)
+    const [borrow, setBorrow] = useState("");
     const [owe, setOwe] = useState([])
     const [owed, setOwed] = useState([])
     const [firstOpen, setFirstOpen] = useState(false)
@@ -61,7 +61,7 @@ function Dashboard({props}) {
             console.log(result)
             values.body = '';
             values.amount = '';
-            values.username = '';
+            values.username = borrow;
         },onError(err) {
             setErrors(err&&err.graphQLErrors[0]?err.graphQLErrors[0].extensions.exception.errors:{});
         }
@@ -74,9 +74,8 @@ function Dashboard({props}) {
 
     const submitForm = (e) => {
         e.preventDefault();
-
         setFirstOpen(false)
-        addBills();
+        // addBills();
     }
 
 
@@ -101,11 +100,20 @@ function Dashboard({props}) {
                             >
                                 <Modal.Header>Add an Expense</Modal.Header>
                                 <Modal.Content className="model__content">
-                                        With you and :
-                                        <input list='people' placeholder='Choose a friend...' />
-                                        <datalist id="people">
+                                    With you and :
+                                        <input
+                                            list='people'
+                                            name={borrow}
+                                            placeholder='Choose a friend...'
+                                            onChange={(e) => setBorrow(e.target.value)}
+                                        />
+                                        <datalist
+                                            
+                                            id="people"
+                                            value={borrow}
+                                        >
                                         {users && users.getUsers.map(user => (
-                                            <option value={user.username}>{user.username}</option>
+                                            <option key={user.username} value={user.username} />
                                         ))}
                                         </datalist>
                                 </Modal.Content>
