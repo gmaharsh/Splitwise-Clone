@@ -82,6 +82,24 @@
   border-left: 1px solid #eee;
 }
 
+.model__content {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.model__content > input {
+  width: 80% !important;
+  outline: none !important;
+  border: none !important;
+}
+
+.model__contentdescription > input {
+  border: none !important;
+  outline: none !important;
+  border-bottom: 4px dashed #eee !important;
+  margin-bottom: 12px !important;
+}
+
 @media (max-width: 1300px) {
   .dashboard__heading > h3 {
     font-size: 20px;

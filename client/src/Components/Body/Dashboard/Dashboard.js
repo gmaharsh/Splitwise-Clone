@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from '@apollo/react-hooks';
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Dropdown, Icon, MenuItem, Modal, Select } from 'semantic-ui-react';
+import { Button, Dropdown, Form, Icon, Input, MenuItem, Modal, Select } from 'semantic-ui-react';
 import { AuthContext } from '../../../context/auth';
 import { FETCH_USERS_QUERY } from '../../../utils/graphql';
 import Card from './Card/Card';
@@ -9,11 +9,14 @@ import './Dashboard.css';
 function Dashboard({props}) {
 
     const user = useContext(AuthContext)
+    console.log(user.user.username)
     const [owe, setOwe] = useState([])
     const [owed, setOwed] = useState([])
     const [firstOpen, setFirstOpen] = useState(false)
     const [secondOpen, setSecondOpen] = useState(false)
     const [thirdOpen, setThirdOpen] = useState(false)
+    const[errors, setErrors] = useState({});
+    
     const [values, setValues] = useState({
         body: "",
         amount: "",
@@ -23,15 +26,24 @@ function Dashboard({props}) {
     const changeValues = (event) => {
         setValues({ ...values, [event.target.name]: event.target.value })
     }
-    const { data } = useQuery(FETCH_POSTS_QUERY, { 
+
+
+    const { loading, data: users } = useQuery(FETCH_USERS_QUERY);
+    console.log("Users:-", users)
+
+    const { data: posts } = useQuery(FETCH_POSTS_QUERY, { 
         variables: { 
             username: user.user.username
         }
     })
 
+    console.log("Posts", posts)
+
+
+
     useEffect(() => {
-        if (data) {
-            data.getAccountDetails.map(account => {
+        if (posts) {
+            posts.getAccountDetails.map(account => {
                 if (account.amountOweCount > 0) {
                     setOwed(prevState => [...prevState, {account}])
                 } else {
@@ -39,10 +51,10 @@ function Dashboard({props}) {
                 }
             })
         }
-    }, [data])
+        // QueryMultiple();
+    }, [posts])
 
     
-    console.log(owed)
     const [addBills, { error }] = useMutation(ADD_TRANSACTION, {
         variables: values,
         update(_, result) {
@@ -50,6 +62,8 @@ function Dashboard({props}) {
             values.body = '';
             values.amount = '';
             values.username = '';
+        },onError(err) {
+            setErrors(err&&err.graphQLErrors[0]?err.graphQLErrors[0].extensions.exception.errors:{});
         }
     })
 
@@ -60,6 +74,7 @@ function Dashboard({props}) {
 
     const submitForm = (e) => {
         e.preventDefault();
+
         setFirstOpen(false)
         addBills();
     }
@@ -77,6 +92,8 @@ function Dashboard({props}) {
                             <button class="medium ui orange button" onClick={() => setFirstOpen(true)}>Add an Expense</button>
                             <button class="medium ui teal button" onClick={() => setSecondOpen(true)}>Settle Up</button>
                             <Modal
+                                as={Form}
+                                onSubmit={submitForm}
                                 size="tiny"
                                 onClose={() => setFirstOpen(false)}
                                 onOpen={() => setFirstOpen(true)}
@@ -85,12 +102,12 @@ function Dashboard({props}) {
                                 <Modal.Header>Add an Expense</Modal.Header>
                                 <Modal.Content className="model__content">
                                         With you and :
-                                        <input
-                                            placeholder="Enter your friend's name"
-                                            name="username"
-                                            value={values.username}
-                                            onChange={changeValues}
-                                        />
+                                        <input list='people' placeholder='Choose a friend...' />
+                                        <datalist id="people">
+                                        {users && users.getUsers.map(user => (
+                                            <option value={user.username}>{user.username}</option>
+                                        ))}
+                                        </datalist>
                                 </Modal.Content>
                                 <hr />
                                 <Modal.Content className="model__contentdescription divider">
@@ -147,10 +164,19 @@ function Dashboard({props}) {
                                         </Button>
                                         <Button
                                             content="Save"
-                                            onClick={submitForm}
+                                            type='submit'
                                             positive
                                         />
                                 </Modal.Actions>
+                                {Object.keys(errors).length > 0 && (
+                                    <div className="ui error message">
+                                    <ul className="list">
+                                        {Object.values(errors).map((value) => (
+                                        <li key={value}>{value}</li>
+                                        ))}
+                                    </ul>
+                                    </div>
+                                )}
                             </Modal>
                             <Modal
                                 size="tiny"
@@ -248,12 +274,12 @@ function Dashboard({props}) {
                 </div>
                 <div className="dashboard__accounts">
                     <div className="dashboard__owe">
-                        {data && owe.map(account => (
+                        {posts && owe.map(account => (
                             <Card name={account.account.borrowName} amount={account.account.amountOweCount} owe={true} />
                         ))}
                     </div>
                     <div className="dashboard__owed">
-                        {data && owed.map(account => (
+                        {posts && owed.map(account => (
                             <Card name={account.account.borrowName} amount={account.account.amountOweCount} owe={false} />
                         ))}
                     </div>

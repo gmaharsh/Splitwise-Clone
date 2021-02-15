@@ -37,7 +37,7 @@ function Header() {
                         active={activeItem === 'friends'}
                         onClick={handleItemClick}
                     >
-                        {/* <img src="https://i1.rgstatic.net/ii/profile.image/610169692123136-1522487199639_Q512/Maharsh_Gheewala.jpg" style={{ borderRadius:'30px', width:'3vh', marginRight:'20px'}} alt="" /> */}
+                        <img src="http://assets.stickpng.com/images/585e4bf3cb11b227491c339a.png" style={{ borderRadius:'30px', width:'3vh', marginRight:'20px'}} alt="" />
                         {user ? (
                             <Dropdown
                                 inline

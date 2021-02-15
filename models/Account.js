@@ -1,7 +1,7 @@
 const { model, Schema } = require('mongoose');
 
 const AccountSchema = new Schema({
-    id: String,
+    id:String,
     lenderName: String,
     borrowName: String,
     createdAt:Date,
