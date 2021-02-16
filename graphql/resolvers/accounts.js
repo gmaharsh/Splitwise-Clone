@@ -8,7 +8,7 @@ module.exports = {
         async getPosts() {
             try {
                 const posts = await Account.find().sort({ createdAt: -1 });
-                console.log(posts)
+                // console.log(posts)
                 return posts
             } catch (err) {
                 throw new Error(err)
@@ -17,8 +17,14 @@ module.exports = {
         async getAccountDetails(_, { username }, context) {
             const user = checkAuth(context)
             try {
-                const post = await Account.find({ lenderName: username })
-                console.log(post)
+                const post = await Account.find({ user2: username })
+                const post1 = await Account.find({ user1 :username })
+                if (post1) {
+                    post1.map(postValues => {
+                        post.push(postValues)
+                    })
+                }
+                console.log("Post:-", post)
                 return post
             } catch (err) {
                 throw new Error(err)
