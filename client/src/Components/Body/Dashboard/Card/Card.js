@@ -7,12 +7,12 @@ function Card({ name, amount, owe }) {
         <div className="card">  
             <img
                 class="ui avatar image"
-                src="https://i1.rgstatic.net/ii/profile.image/610169692123136-1522487199639_Q512/Maharsh_Gheewala.jpg"
+                src="https://www.pngkey.com/png/detail/448-4483798_download-icon-user-png-clipart-computer-icons-user.png"
                 alt=""
             />
             <div className="card__details">
                 <h4>{name}</h4>
-                {owe ? (<p>you owe ${amount}</p>) : (<p>owes you ${amount}</p>)}
+                {owe ? (<span style={{color: '#ff652f'}}><p>you owe ${amount}</p></span>) : (<span style={{color: '#5bc5a7'}}><p>owes you ${amount}</p></span>)}
             </div>
         </div>
     )

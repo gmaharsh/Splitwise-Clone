@@ -44,15 +44,25 @@ function Dashboard({props}) {
     useEffect(() => {
         if (posts) {
             posts.getAccountDetails.map(account => {
-                if (account.amountOweCount > 0) {
-                    setOwed(prevState => [...prevState, {account}])
-                } else {
-                    setOwe(prevState => [...prevState, {account}])
+                if (account.user1 == user.user.username) {
+                    if (account.user1OweCount > 0) {
+                        setOwed(prevState => [...prevState, {account}])
+                    } else {
+                        setOwe(prevState => [...prevState, {account}])
+                    }
+                }
+                if (account.user2 == user.user.username) {
+                    if (account.user2OweCount > 0) {
+                        setOwed(prevState => [...prevState, {account}])
+                    } else {
+                        setOwe(prevState => [...prevState, {account}])
+                    }
                 }
             })
         }
-        // QueryMultiple();
     }, [posts])
+
+    console.log(owe)
 
     
     const [addBills, { error }] = useMutation(ADD_TRANSACTION, {
@@ -283,12 +293,12 @@ function Dashboard({props}) {
                 <div className="dashboard__accounts">
                     <div className="dashboard__owe">
                         {posts && owe.map(account => (
-                            <Card name={account.account.borrowName} amount={account.account.amountOweCount} owe={true} />
+                            <Card name={account.account.user1} amount={account.account.user1OweCount} owe={true} />
                         ))}
                     </div>
                     <div className="dashboard__owed">
                         {posts && owed.map(account => (
-                            <Card name={account.account.borrowName} amount={account.account.amountOweCount} owe={false} />
+                            <Card name={account.account.user2} amount={account.account.user1OweCount} owe={false} />
                         ))}
                     </div>
                 </div>
@@ -320,9 +330,18 @@ const ADD_TRANSACTION = gql`
 
 const FETCH_POSTS_QUERY = gql`
     query($username: String!){
-        getAccountDetails(username: $username){
-            borrowName
-            amountOweCount
+        getAccountDetails(username:$username){
+            user1
+            user2
+            amountOwe{
+                amount
+                body
+                lenderName
+                borrowerName
+            }
+            user1OweCount
+            user2OweCount
+            createdAt
         }
     }
 `;
