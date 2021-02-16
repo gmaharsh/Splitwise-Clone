@@ -12,7 +12,7 @@ import { useContext } from 'react';
 // import AuthRoute from './utils/AuthRoute';
 
 
-function App() {
+function App({client}) {
 
   const { user, logout } = useContext(AuthContext)
   console.log(user)
@@ -23,7 +23,7 @@ function App() {
       <div className="App">
         <Router>
         <Header /> 
-          <Route exact path="/" component={Body} />
+          <Route exact path="/" component={Body} client={client} />
           <Route exact path="/Signup" component={Signup} />
           <Route exact path="/login" component={Login} />
         </Router>

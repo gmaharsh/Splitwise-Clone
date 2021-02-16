@@ -1,11 +1,29 @@
 import { useQuery } from '@apollo/react-hooks';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../../context/auth';
 import { FETCH_USERS_QUERY } from '../../../utils/graphql';
 import './Sidebar.css';
 
 function Sidebar() {
 
     const { loading, data } = useQuery(FETCH_USERS_QUERY);
+    const user = useContext(AuthContext)
+    const [friends, setFriends] = useState([]);
+    // useEffect(() => {
+    //     console.log("Friends from Sidebar", data)
+    // },[])
+    useEffect(() => {
+        if (data) {
+            data.getUsers.map(friends => {
+                if (friends.username != user.user.username) {
+                    // setFriends(...friends, friends.username)
+                    setFriends(prevState => [...prevState, friends.username])
+                }})
+        }
+    },[data])
+    
+
+    console.log(friends)
 
     const [active, setActive] = useState(false)
 
@@ -54,10 +72,10 @@ function Sidebar() {
                         Add
                     </span>
                 </div>
-                {data && data.getUsers.map(user => (
+                {data && friends.map(user => (
                     <div className="sidebar__upper__items">
                         <i class="user icon"></i>
-                        <h3>{user.username}</h3>
+                        <h3>{user}</h3>
                     </div>
                 ))}
 

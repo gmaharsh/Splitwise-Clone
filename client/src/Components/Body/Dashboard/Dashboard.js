@@ -3,10 +3,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Button, Dropdown, Form, Icon, Input, MenuItem, Modal, Popup, Select } from 'semantic-ui-react';
 import { AuthContext } from '../../../context/auth';
 import { FETCH_USERS_QUERY } from '../../../utils/graphql';
+import { FETCH_POSTS_QUERY } from '../../../utils/graphql';
 import Card from './Card/Card';
 import './Dashboard.css';
-
-function Dashboard({props}) {
+function Dashboard({ client }) {
+    
 
     const user = useContext(AuthContext)
     const [borrow, setBorrow] = useState("");
@@ -16,7 +17,8 @@ function Dashboard({props}) {
     const [secondOpen, setSecondOpen] = useState(false)
     const [thirdOpen, setThirdOpen] = useState(false)
     const [errors, setErrors] = useState({});
-    
+    const [friends, setFriends] = useState([]);
+
     const [values, setValues] = useState({
         body: "",
         amount: "",
@@ -28,25 +30,18 @@ function Dashboard({props}) {
     }
 
 
-    const { loading, data: users } = useQuery(FETCH_USERS_QUERY);
-    // console.log("Users:-", users)
+    const { loading, data: users } = useQuery(FETCH_USERS_QUERY); 
 
     const { data: posts } = useQuery(FETCH_POSTS_QUERY, { 
         variables: { 
             username: user.user.username
         },
-        update(proxy, result) {
-            const data = proxy.readQuery({
-                query: FETCH_POSTS_QUERY
-            });
-            console.log(result)
-            data.getPosts = [result.data.createPost, ...data.getPosts];
-            proxy.writeQuery({ query: FETCH_POSTS_QUERY, data });
-            values.body = '';
+        update(_, result) {
+            console.log("results from post query", result)
         }
     })
 
-    console.log("Posts", posts)
+    // console.log("Posts", posts)
 
 
 
@@ -80,7 +75,17 @@ function Dashboard({props}) {
         }
     }, [posts])
 
-    console.log("Owe", owed)
+    useEffect(() => {
+        if (users) {
+            users.getUsers.map(friends => {
+                if (friends.username != user.user.username) {
+                    // console.log("Dashboard for friends", friends)
+                    setFriends(prevState => [...prevState, friends.username])
+                }})
+        }
+    },[users])
+
+    console.log("Owe", friends)
 
     const submitForm = (e) => {
         e.preventDefault();
@@ -92,9 +97,19 @@ function Dashboard({props}) {
     
     const [addBills, { error }] = useMutation(ADD_TRANSACTION, {
         variables: values,
-        update(_, result) {
-            console.log(result)
-            console.log("Borrow While ")
+        update(proxy, result) {
+            console.log(result.data)
+            const data = proxy.readQuery({ query: FETCH_POSTS_QUERY })
+            console.log("Reading through Proxy:-", data)
+            const newData = [result.data, data]
+            proxy.writeQuery({
+                query: FETCH_POSTS_QUERY,
+                data: {
+                    posts: [...data.posts, result.data],
+                },
+                });
+
+
             values.body = '';
             values.amount = '';
             values.username = '';
@@ -144,8 +159,8 @@ function Dashboard({props}) {
                                             id="people"
                                             // value={borrow}
                                         >
-                                        {users && users.getUsers.map(user => (
-                                            <option key={user.username} value={user.username} />
+                                        {friends && friends.map(user => (
+                                            <option key={user} value={user} />
                                         ))}
                                         </datalist>
                                 </Modal.Content>
@@ -355,23 +370,6 @@ const ADD_TRANSACTION = gql`
   }
 `;
 
-const FETCH_POSTS_QUERY = gql`
-    query($username: String!){
-        getAccountDetails(username:$username){
-            user1
-            user2
-            amountOwe{
-                amount
-                body
-                lenderName
-                borrowerName
-            }
-            user1OweCount
-            user2OweCount
-            createdAt
-        }
-    }
-`;
 
 
 

@@ -7,7 +7,7 @@ import './Body.css';
 import Dashboard from './Dashboard/Dashboard'
 import Sidebar from './Sidebar/Sidebar'
 
-function Body() {
+function Body({client}) {
     const user = useContext(AuthContext)
     // console.log(user.user)
     return (
@@ -15,7 +15,7 @@ function Body() {
             {user.user ? (
                 <>
                     <Sidebar />
-                    <Dashboard />
+                    <Dashboard client={client} />
                     <Ads />
                 </>
             ):(
