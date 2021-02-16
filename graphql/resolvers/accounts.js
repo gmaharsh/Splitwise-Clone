@@ -24,7 +24,7 @@ module.exports = {
                         post.push(postValues)
                     })
                 }
-                console.log("Post:-", post)
+                // console.log("Post:-", post)
                 return post
             } catch (err) {
                 throw new Error(err)
@@ -43,6 +43,8 @@ module.exports = {
 
             let user1 = user.username;
             let user2 = username;
+            console.log(user1)
+            console.log(user2)
             let postId = ""
             let u1 = await Account.find({ user1 })
             if (u1) {
@@ -99,6 +101,7 @@ module.exports = {
                     })
                     post.user1OweCount = newUser1OweCount
                     post.user2OweCount = newUser2OweCount
+                    
                     await post.save();
                     return post;
                 } else {
@@ -115,7 +118,8 @@ module.exports = {
                     })
                     post.user1OweCount = newUser2OweCount
                     post.user2OweCount = newUser1OweCount
-                    
+                    await post.save();
+                    return post;
                 }
             }
         }

@@ -15,7 +15,7 @@ function Dashboard({props}) {
     const [firstOpen, setFirstOpen] = useState(false)
     const [secondOpen, setSecondOpen] = useState(false)
     const [thirdOpen, setThirdOpen] = useState(false)
-    const[errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({});
     
     const [values, setValues] = useState({
         body: "",
@@ -29,11 +29,20 @@ function Dashboard({props}) {
 
 
     const { loading, data: users } = useQuery(FETCH_USERS_QUERY);
-    console.log("Users:-", users)
+    // console.log("Users:-", users)
 
     const { data: posts } = useQuery(FETCH_POSTS_QUERY, { 
         variables: { 
             username: user.user.username
+        },
+        update(proxy, result) {
+            const data = proxy.readQuery({
+                query: FETCH_POSTS_QUERY
+            });
+            console.log(result)
+            data.getPosts = [result.data.createPost, ...data.getPosts];
+            proxy.writeQuery({ query: FETCH_POSTS_QUERY, data });
+            values.body = '';
         }
     })
 
@@ -44,34 +53,51 @@ function Dashboard({props}) {
     useEffect(() => {
         if (posts) {
             posts.getAccountDetails.map(account => {
-                if (account.user1 == user.user.username) {
+                console.log("Account Checking", account)
+                if (account.user1 === user.user.username) {
+                    let AccountDetails = {
+                        friendName: account.user2,
+                        amount: account.user1OweCount
+                    }
                     if (account.user1OweCount > 0) {
-                        setOwed(prevState => [...prevState, {account}])
+                        setOwed(prevState => [...prevState, {AccountDetails}])
                     } else {
-                        setOwe(prevState => [...prevState, {account}])
+                        setOwe(prevState => [...prevState, {AccountDetails}])
                     }
                 }
                 if (account.user2 == user.user.username) {
+                    let AccountDetails = {
+                        friendName: account.user1,
+                        amount: account.user2OweCount
+                    }
                     if (account.user2OweCount > 0) {
-                        setOwed(prevState => [...prevState, {account}])
+                        setOwed(prevState => [...prevState, {AccountDetails}])
                     } else {
-                        setOwe(prevState => [...prevState, {account}])
+                        setOwe(prevState => [...prevState, {AccountDetails}])
                     }
                 }
             })
         }
     }, [posts])
 
-    console.log(owe)
+    console.log("Owe", owed)
+
+    const submitForm = (e) => {
+        e.preventDefault();
+        setFirstOpen(false)
+        console.log("Values", values)
+        addBills();
+    }
 
     
     const [addBills, { error }] = useMutation(ADD_TRANSACTION, {
         variables: values,
         update(_, result) {
             console.log(result)
+            console.log("Borrow While ")
             values.body = '';
             values.amount = '';
-            values.username = borrow;
+            values.username = '';
         },onError(err) {
             setErrors(err&&err.graphQLErrors[0]?err.graphQLErrors[0].extensions.exception.errors:{});
         }
@@ -82,11 +108,7 @@ function Dashboard({props}) {
         setThirdOpen(false)
     }
 
-    const submitForm = (e) => {
-        e.preventDefault();
-        setFirstOpen(false)
-        // addBills();
-    }
+    
 
 
     const friendOptions = [ ]
@@ -113,14 +135,14 @@ function Dashboard({props}) {
                                     With you and :
                                         <input
                                             list='people'
-                                            name={borrow}
+                                            // name={values.username}
+                                            // value={values.username}
                                             placeholder='Choose a friend...'
-                                            onChange={(e) => setBorrow(e.target.value)}
+                                            onChange={(e) => setValues({username:e.target.value})}
                                         />
                                         <datalist
-                                            
                                             id="people"
-                                            value={borrow}
+                                            // value={borrow}
                                         >
                                         {users && users.getUsers.map(user => (
                                             <option key={user.username} value={user.username} />
@@ -177,13 +199,15 @@ function Dashboard({props}) {
                                 <Modal.Actions>
                                         <Button
                                             color='black'
-                                            onClick={() => setFirstOpen(false)}>
+                                            onClick={() => setFirstOpen(false)}
+                                            >
                                         Cancel
                                         </Button>
                                         <Button
                                             content="Save"
                                             type='submit'
                                             positive
+                                            
                                         />
                                 </Modal.Actions>
                                 {Object.keys(errors).length > 0 && (
@@ -292,13 +316,15 @@ function Dashboard({props}) {
                 </div>
                 <div className="dashboard__accounts">
                     <div className="dashboard__owe">
-                        {posts && owe.map(account => (
-                            <Card name={account.account.user1} amount={account.account.user1OweCount} owe={true} />
+                        {owe && owe.map(account => (
+                            // console.log(account.AccountDetails.friendName)
+                            <Card name={account.AccountDetails.friendName} amount={account.AccountDetails.amount} owe={true} />
                         ))}
                     </div>
                     <div className="dashboard__owed">
-                        {posts && owed.map(account => (
-                            <Card name={account.account.user2} amount={account.account.user1OweCount} owe={false} />
+                        {owed && owed.map(account => (
+                            // console.log(account.AccountDetails.friendName)
+                            <Card name={account.AccountDetails.friendName} amount={account.AccountDetails.amount} owe={false} />
                         ))}
                     </div>
                 </div>
@@ -313,16 +339,17 @@ const ADD_TRANSACTION = gql`
     $amount:String!, 
     $username:String!
   ) {
-    addAmount(
-      body: $body,
-      amount :$amount,
-      username: $username
-    ) {
-        lenderName
+    addAmount(body:$body, amount:$amount, username:$username){
+        user1
+        user2
         amountOwe{
             body
             amount
+            lenderName
+            borrowerName
         }
+        user1OweCount
+        user2OweCount
         createdAt
     }
   }
