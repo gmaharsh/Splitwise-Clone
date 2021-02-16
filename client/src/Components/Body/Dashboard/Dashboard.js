@@ -318,7 +318,7 @@ function Dashboard({props}) {
                     <div className="dashboard__owe">
                         {owe && owe.map(account => (
                             // console.log(account.AccountDetails.friendName)
-                            <Card name={account.AccountDetails.friendName} amount={account.AccountDetails.amount} owe={true} />
+                            <Card name={account.AccountDetails.friendName} amount={-(account.AccountDetails.amount)} owe={true} />
                         ))}
                     </div>
                     <div className="dashboard__owed">
