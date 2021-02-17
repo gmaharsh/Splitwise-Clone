@@ -1,4 +1,26 @@
 .ads {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   flex: 0.4;
-  width: 100%;
+  width: 70%;
+  margin-top: 20px;
+}
+
+.ads > h3 {
+  color: #999;
+  /* margin: 0 auto; */
+}
+
+.ads > img {
+  /* margin: 0 auto; */
+}
+
+.ads > p {
+  /* margin: 10px auto; */
+  width: 70%;
+}
+
+Button {
+  align-items: flex-start;
 }
