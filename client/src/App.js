@@ -12,20 +12,19 @@ import { useContext } from 'react';
 // import AuthRoute from './utils/AuthRoute';
 
 
-function App({client}) {
+function App() {
 
-  const { user, logout } = useContext(AuthContext)
-  console.log(user)
+  const { user } = useContext(AuthContext)
+  console.log("user", user);
 
   return (
     <AuthProvider>
-
       <div className="App">
         <Router>
         <Header /> 
-          <Route exact path="/" component={Body} client={client} />
-          <Route exact path="/Signup" component={Signup} />
-          <Route exact path="/login" component={Login} />
+          <Route exact path="/" component={Body} />
+          <AuthRoute exact path="/Signup" component={Signup} />
+          <AuthRoute exact path="/login" component={Login} />
         </Router>
       </div>
     </AuthProvider>

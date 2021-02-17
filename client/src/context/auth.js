@@ -30,7 +30,7 @@ function authReducer(state, action) {
         case 'REGISTER':
             return {
                 ...state,
-                user:null
+                user:action.payload
             }
         case 'LOGOUT':
             return {

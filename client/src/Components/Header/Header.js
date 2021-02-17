@@ -20,11 +20,11 @@ function Header() {
 
     const options = [
         { key: 'user', text: username, value:username },
-        { key: 'sign-out', text: 'Sign Out', icon: 'sign out', as: Link, to: '/logout' },
+        { key: 'sign-out', text: 'Sign Out', onClick: logout, icon: 'sign out', as: Link, to: '/login'},
     ]
     const userNotOptions = [
-        { key: 'group', text: 'Login', as: Link, to: '/login' },
-        { key: 'group', text: 'Signup', as: Link, to: '/Signup' }
+        { key: 'login', text: 'Login', as: Link, to: '/login' },
+        { key: 'signup', text: 'Signup', as: Link, to: '/Signup' }
      ]
 
     return (

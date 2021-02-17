@@ -60,7 +60,7 @@ function Login(props) {
                         />
                     </Form.Field>
                     <Button className="ui orange button" type='submit'>Log in</Button>
-                    <p>Forgot your password? Click Here</p>
+                    <p>Forgot your password? <span style={{ color: 'blue'}}>Click Here</span></p>
                     <hr />
                     <div className="login__socialButtons">
                         <p>Or log in with</p>

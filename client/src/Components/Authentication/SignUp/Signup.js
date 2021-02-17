@@ -11,7 +11,7 @@ function Signup(props) {
     const [errors, setErrors] = useState({});
 
     const [values, setValues] = useState({
-        name: "",
+        username: "",
         email: "",
         password: "",
     });
@@ -33,6 +33,7 @@ function Signup(props) {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        console.log(values)
         addUser()
     }
     
@@ -47,8 +48,8 @@ function Signup(props) {
                         <label>Hi there! My name is</label>
                         <input
                             type="text"
-                            name="name"
-                            value={values.name}
+                            name="username"
+                            value={values.username}
                             onChange={onChangeValues}
                         />
                     </Form.Field>
@@ -96,22 +97,19 @@ function Signup(props) {
 
 const REGISTER_USER = gql`
   mutation register(
-    $name: String!
+    $username: String!
     $email: String!
     $password: String!
   ) {
-    register(
-      registerInput: {
-        name: $name
-        email: $email
-        password: $password
-      }
-    ) {
-      id
-      email
-      name
-      createdAt
-      token
+    register(registerInput:{
+    username:$username
+    password:$password
+    email:$email
+    }){
+        id
+        email
+        token
+        username
     }
   }
 `;

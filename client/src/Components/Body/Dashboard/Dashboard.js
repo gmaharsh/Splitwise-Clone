@@ -6,10 +6,11 @@ import { FETCH_USERS_QUERY } from '../../../utils/graphql';
 import { FETCH_POSTS_QUERY } from '../../../utils/graphql';
 import Card from './Card/Card';
 import './Dashboard.css';
-function Dashboard({ client }) {
+function Dashboard() {
     
 
     const user = useContext(AuthContext)
+    console.log("User", user);
     const [borrow, setBorrow] = useState("");
     const [owe, setOwe] = useState([])
     const [owed, setOwed] = useState([])
@@ -34,7 +35,7 @@ function Dashboard({ client }) {
 
     const { data: posts } = useQuery(FETCH_POSTS_QUERY, { 
         variables: { 
-            username: user.user.username
+            username: "Maharsh"
         },
         update(_, result) {
             console.log("results from post query", result)
@@ -78,14 +79,14 @@ function Dashboard({ client }) {
     useEffect(() => {
         if (users) {
             users.getUsers.map(friends => {
-                if (friends.username != user.user.username) {
+                if (friends.username != "Maharsh") {
                     // console.log("Dashboard for friends", friends)
                     setFriends(prevState => [...prevState, friends.username])
                 }})
         }
     },[users])
 
-    console.log("Owe", friends)
+    console.log("Owe", owe)
 
     const submitForm = (e) => {
         e.preventDefault();
@@ -273,7 +274,7 @@ function Dashboard({ client }) {
                                 <Modal.Header>Settle Up the Payment</Modal.Header>
                                 
                                 <Modal.Content className="model__contentdescription divider" style={{ textAlign: 'center' }} >
-                                    You Paid pragya
+                                    You Paid Harshit
                                 </Modal.Content>
                                 <Modal.Content className="model__contentdescription" style={{ display: 'flex', flexDirection: 'column', paddingTop:'20px'}}>
                                    <input
@@ -303,15 +304,15 @@ function Dashboard({ client }) {
             <div className="dashboard__insights">
                 <div className="dashboard__insight">
                     <h4>total balances</h4>
-                    <p>+$241.46</p>
+                    <p>+ $2564.00</p>
                 </div>
                 <div className="dashboard__insight" style={{ borderRight: '1px solid #ddd', borderLeft: '1px solid #ddd', lineHeight: '1px'}}>
                     <h4>you owe</h4>
-                    <p>+ $0.0</p>
+                    <p>$30.0</p>
                 </div>
                 <div className="dashboard__insight">
                     <h4>you owed</h4>
-                    <p>+$241.46</p>
+                    <p>+ $2594.00</p>
                 </div>
             </div>
             <div className="dashboard__body">
