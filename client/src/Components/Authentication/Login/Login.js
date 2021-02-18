@@ -48,6 +48,7 @@ function Login(props) {
                             name="email"
                             value={values.email}
                             onChange={onChangeValues}
+                            autocomplete="off"
                         />
                     </Form.Field>
                     <Form.Field>

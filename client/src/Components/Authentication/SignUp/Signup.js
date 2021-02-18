@@ -51,6 +51,7 @@ function Signup(props) {
                             name="username"
                             value={values.username}
                             onChange={onChangeValues}
+                            autocomplete="off"
                         />
                     </Form.Field>
                     <Form.Field>
@@ -60,6 +61,7 @@ function Signup(props) {
                             name="email"
                             value={values.email}
                             onChange={onChangeValues}
+                            autocomplete="off"
                         />
                     </Form.Field>
                     <Form.Field>
@@ -69,6 +71,7 @@ function Signup(props) {
                             name="password"
                             value={values.password}
                             onChange={onChangeValues}
+                            autocomplete="off"
                         />
                     </Form.Field>
                     <div className="buttons">

@@ -10,7 +10,6 @@ function Dashboard() {
     
 
     const user = useContext(AuthContext)
-    console.log("User", user);
     const [borrow, setBorrow] = useState("");
     const [owe, setOwe] = useState([])
     const [owed, setOwed] = useState([])
@@ -19,6 +18,9 @@ function Dashboard() {
     const [thirdOpen, setThirdOpen] = useState(false)
     const [errors, setErrors] = useState({});
     const [friends, setFriends] = useState([]);
+    let amountOwed = 0;
+    let amountOwe = 0;
+    let balance = 0;
 
     const [values, setValues] = useState({
         body: "",
@@ -29,7 +31,6 @@ function Dashboard() {
     const changeValues = (event) => {
         setValues({ ...values, [event.target.name]: event.target.value })
     }
-
 
     const { loading, data: users } = useQuery(FETCH_USERS_QUERY); 
 
@@ -42,10 +43,6 @@ function Dashboard() {
         }
     })
 
-    // console.log("Posts", posts)
-
-
-
     useEffect(() => {
         if (posts) {
             posts.getAccountDetails.map(account => {
@@ -55,7 +52,9 @@ function Dashboard() {
                         friendName: account.user2,
                         amount: account.user1OweCount
                     }
+                    
                     if (account.user1OweCount > 0) {
+                        
                         setOwed(prevState => [...prevState, {AccountDetails}])
                     } else {
                         setOwe(prevState => [...prevState, {AccountDetails}])
@@ -86,7 +85,14 @@ function Dashboard() {
         }
     },[users])
 
-    console.log("Owe", owe)
+    const countSum = () => {
+        owe && owe.map(o => (
+            console.log(o)
+        ))
+        owed && owed.map(o => (
+            console.log("owed", o)
+        ))
+    }
 
     const submitForm = (e) => {
         e.preventDefault();
@@ -125,10 +131,6 @@ function Dashboard() {
     }
 
     
-
-
-    const friendOptions = [ ]
-
     return (
         <div className="dashboard">
             <div className="dashboard__heading">
@@ -154,7 +156,8 @@ function Dashboard() {
                                             // name={values.username}
                                             // value={values.username}
                                             placeholder='Choose a friend...'
-                                            onChange={(e) => setValues({username:e.target.value})}
+                                            onChange={(e) => setValues({ username: e.target.value })}
+                                            autocomplete="off"
                                         />
                                         <datalist
                                             id="people"
@@ -172,12 +175,14 @@ function Dashboard() {
                                             name="body"
                                             value={values.body}
                                             onChange={changeValues}
+                                            autocomplete="off"
                                         />
                                         <input
                                             placeholder="Enter an amount"
                                             name="amount"
                                             value={values.amount}
                                             onChange={changeValues}
+                                            autocomplete="off"
                                         />
                                 </Modal.Content>
                                 <Modal.Content className="model__contentbuttons">
@@ -191,9 +196,9 @@ function Dashboard() {
                                         >
                                             <Dropdown.Menu>
                                             <Dropdown.Header content='People You Might Know' />
-                                            {friendOptions.map((option) => (
+                                            {/* {friendOptions.map((option) => (
                                                 <Dropdown.Item key={option.value} {...option} />
-                                            ))}
+                                            ))} */}
                                             </Dropdown.Menu>
                                         </Dropdown>
                                         and split
@@ -206,9 +211,9 @@ function Dashboard() {
                                         >
                                             <Dropdown.Menu>
                                             <Dropdown.Header content='People You Might Know' />
-                                            {friendOptions.map((option) => (
+                                            {/* {friendOptions.map((option) => (
                                                 <Dropdown.Item key={option.value} {...option} />
-                                            ))}
+                                            ))} */}
                                             </Dropdown.Menu>
                                         </Dropdown>
                                 </Modal.Content>    
@@ -303,16 +308,25 @@ function Dashboard() {
             </div>
             <div className="dashboard__insights">
                 <div className="dashboard__insight">
+                    {owed && owed.map(o => {
+                        amountOwed += o.AccountDetails.amount;
+                    })}
+                    {owe && owe.map(o => {
+                        amountOwe += o.AccountDetails.amount;
+                    })}
                     <h4>total balances</h4>
-                    <p>+ $2564.00</p>
+                    {}
+                    <p>${amountOwed + amountOwe}</p>
                 </div>
                 <div className="dashboard__insight" style={{ borderRight: '1px solid #ddd', borderLeft: '1px solid #ddd', lineHeight: '1px'}}>
                     <h4>you owe</h4>
-                    <p>$30.0</p>
+                    
+                    <p>${(-amountOwe)}</p>
                 </div>
                 <div className="dashboard__insight">
                     <h4>you owed</h4>
-                    <p>+ $2594.00</p>
+                    
+                    <p>${amountOwed}</p>
                 </div>
             </div>
             <div className="dashboard__body">
