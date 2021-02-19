@@ -2,7 +2,7 @@ const { gql } = require('apollo-server');
 
 module.exports = gql`
     type Account{
-        id:ID!,
+        _id:ID!,
         user1:String!,
         user2: String!,
         amountOwe:[owe]!
@@ -38,7 +38,8 @@ module.exports = gql`
         register(registerInput: RegisterInput) : User!
         login(email:String!, password:String!) : User!
         addAmount(body:String!, amount:String!, username:String!) : Account!
-        createComment(postId: String!, body:String!): Account!
-        deleteComment(postId:String!, commentId:ID!): Account!
+        # settleUpAmount(amount:String!, postID:String!):Account!
+        settleUpAmount(postId: String!, amount:String!): Account!
+
     }
 `;

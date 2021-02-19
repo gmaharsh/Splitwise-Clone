@@ -31,6 +31,7 @@ function Login(props) {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        console.log(values)
         loginUser()
     }
 

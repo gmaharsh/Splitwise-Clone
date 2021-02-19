@@ -4,7 +4,8 @@
   margin-top: 10px;
   cursor: pointer;
 }
-.card__details {
+
+.card .card__details {
   margin-left: 10px;
 }
 

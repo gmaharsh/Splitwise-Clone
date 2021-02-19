@@ -4,7 +4,9 @@ import { Button, Dropdown, Form, Icon, Input, MenuItem, Modal, Popup, Select } f
 import { AuthContext } from '../../../context/auth';
 import { FETCH_USERS_QUERY } from '../../../utils/graphql';
 import { FETCH_POSTS_QUERY } from '../../../utils/graphql';
+// import { SETTLE_UP } from '../../../utils/graphql';
 import Card from './Card/Card';
+import Charts from './Charts/Charts';
 import './Dashboard.css';
 function Dashboard() {
     
@@ -18,9 +20,16 @@ function Dashboard() {
     const [thirdOpen, setThirdOpen] = useState(false)
     const [errors, setErrors] = useState({});
     const [friends, setFriends] = useState([]);
+    const [settleUpName, setsettleUpName] = useState([]);
     let amountOwed = 0;
     let amountOwe = 0;
-    let balance = 0;
+    // const settleUpName = "";
+
+    const [settleUpvalues, setsettleUpValues] = useState({
+        amount: "",
+        postId: "",
+        // name: ""
+    });
 
     const [values, setValues] = useState({
         body: "",
@@ -28,20 +37,30 @@ function Dashboard() {
         username: ""
     });
 
+    
+
     const changeValues = (event) => {
         setValues({ ...values, [event.target.name]: event.target.value })
+    }
+
+    const changeValuessettleUp = (e) => {
+        setsettleUpValues({...settleUpvalues, [e.target.name]:e.target.value})
     }
 
     const { loading, data: users } = useQuery(FETCH_USERS_QUERY); 
 
     const { data: posts } = useQuery(FETCH_POSTS_QUERY, { 
         variables: { 
-            username: "Maharsh"
+            username: user.user.username
         },
         update(_, result) {
             console.log("results from post query", result)
         }
     })
+
+    // const openCharts = () => {
+        
+    // }
 
     useEffect(() => {
         if (posts) {
@@ -49,12 +68,11 @@ function Dashboard() {
                 console.log("Account Checking", account)
                 if (account.user1 === user.user.username) {
                     let AccountDetails = {
+                        id: account._id,
                         friendName: account.user2,
                         amount: account.user1OweCount
                     }
-                    
                     if (account.user1OweCount > 0) {
-                        
                         setOwed(prevState => [...prevState, {AccountDetails}])
                     } else {
                         setOwe(prevState => [...prevState, {AccountDetails}])
@@ -62,8 +80,9 @@ function Dashboard() {
                 }
                 if (account.user2 == user.user.username) {
                     let AccountDetails = {
+                        id: account._id,
                         friendName: account.user1,
-                        amount: account.user2OweCount
+                        amount: -account.user1OweCount
                     }
                     if (account.user2OweCount > 0) {
                         setOwed(prevState => [...prevState, {AccountDetails}])
@@ -73,6 +92,7 @@ function Dashboard() {
                 }
             })
         }
+        
     }, [posts])
 
     useEffect(() => {
@@ -83,40 +103,59 @@ function Dashboard() {
                     setFriends(prevState => [...prevState, friends.username])
                 }})
         }
+        
     },[users])
 
-    const countSum = () => {
-        owe && owe.map(o => (
-            console.log(o)
-        ))
-        owed && owed.map(o => (
-            console.log("owed", o)
-        ))
+    const settleUp = () => {
+        console.log("I am clicked")
+        owe.map(o => {
+            console.log(o.AccountDetails.id)
+            setsettleUpValues({
+                postId:o.AccountDetails.id,
+                amount: (-o.AccountDetails.amount),
+            })
+            setsettleUpName(o.AccountDetails.friendName)
+        })
+        console.log(settleUpvalues)
     }
 
     const submitForm = (e) => {
         e.preventDefault();
         setFirstOpen(false)
-        console.log("Values", values)
+        // console.log("Values", values)
         addBills();
     }
+
+    const submitsettleUpForm = (e) => {
+        e.preventDefault();
+        setSecondOpen(false)
+        setThirdOpen(false)
+        console.log("settleUpvalues after submitting", settleUpvalues)
+        settleUpAmount();
+    }
+
+    const [settleUpAmount] = useMutation(SETTLE_UP, {
+        update() {
+            // setComment('');
+            // commentInputRef.current.blur();
+        },
+        variables:settleUpvalues
+    });
 
     
     const [addBills, { error }] = useMutation(ADD_TRANSACTION, {
         variables: values,
-        update(proxy, result) {
-            console.log(result.data)
-            const data = proxy.readQuery({ query: FETCH_POSTS_QUERY })
-            console.log("Reading through Proxy:-", data)
-            const newData = [result.data, data]
-            proxy.writeQuery({
-                query: FETCH_POSTS_QUERY,
-                data: {
-                    posts: [...data.posts, result.data],
-                },
-                });
-
-
+        update(_, result) {
+            // console.log(result.data)
+            // const data = proxy.readQuery({ query: FETCH_POSTS_QUERY })
+            // console.log("Reading through Proxy:-", data)
+            // const newData = [result.data, data]
+            // proxy.writeQuery({
+            //     query: FETCH_POSTS_QUERY,
+            //     data: {
+            //         posts: [...data.posts, result.data],
+            //     },
+            //     })
             values.body = '';
             values.amount = '';
             values.username = '';
@@ -186,7 +225,7 @@ function Dashboard() {
                                         />
                                 </Modal.Content>
                                 <Modal.Content className="model__contentbuttons">
-                                        Paid by 
+                                        Paid by <p>{owe &&  owe.AccountDetails}</p>
                                         <Dropdown
                                             text='Add user'
                                             labeled
@@ -241,11 +280,13 @@ function Dashboard() {
                                     </div>
                                 )}
                             </Modal>
+                            {/* Settle UP Modal Starts */}
                             <Modal
                                 size="tiny"
                                 onClose={() => setSecondOpen(false)}
                                 onOpen={() => setSecondOpen(true)}
                                 open={secondOpen}
+                                onClick={settleUp}
                             >
                                 <Modal.Header>Settle Up</Modal.Header>
                                 
@@ -272,6 +313,8 @@ function Dashboard() {
                                 </Modal.Actions>
                             </Modal>
                             <Modal
+                                as={Form}
+                                onSubmit={submitsettleUpForm}
                                 onClose={() => setThirdOpen(false)}
                                 open={thirdOpen}
                                 size='small'
@@ -279,14 +322,14 @@ function Dashboard() {
                                 <Modal.Header>Settle Up the Payment</Modal.Header>
                                 
                                 <Modal.Content className="model__contentdescription divider" style={{ textAlign: 'center' }} >
-                                    You Paid Harshit
+                                    You Paid {settleUpName}
                                 </Modal.Content>
                                 <Modal.Content className="model__contentdescription" style={{ display: 'flex', flexDirection: 'column', paddingTop:'20px'}}>
                                    <input
                                         placeholder="Enter an amount"
                                         name="amount"
-                                        value={values.amount}
-                                        onChange={changeValues}
+                                        value={settleUpvalues.amount}
+                                        onChange={changeValuessettleUp}
                                     />
                                 </Modal.Content>    
                                 <Modal.Actions>
@@ -297,8 +340,9 @@ function Dashboard() {
                                     />
                                     <Button
                                         content="Save"
-                                        // onClick={submitForm}
+                                        onClick={submitsettleUpForm}
                                         positive
+                                        type='submit'
                                     />
                                 </Modal.Actions>
                             </Modal>
@@ -358,6 +402,17 @@ function Dashboard() {
                         ))}
                     </div>
                 </div>
+                <div className="dashboard__accounts">
+                    <div className="dashboard__owe">
+                       {/* <Charts /> */}
+                    </div>
+                    <div className="dashboard__owed">
+                        {/* {owed && owed.map(account => (
+                            // console.log(account.AccountDetails.friendName)
+                            <Card name={account.AccountDetails.friendName} amount={account.AccountDetails.amount} owe={false} />
+                        ))} */}
+                    </div>
+                </div>
             </div>
         </div>
     )
@@ -381,6 +436,17 @@ const ADD_TRANSACTION = gql`
         user1OweCount
         user2OweCount
         createdAt
+    }
+  }
+`;
+const SETTLE_UP = gql`
+  mutation($postId: String!, $amount: String!) {
+    settleUpAmount(postId: $postId, amount: $amount) {
+      user1
+      user2
+      user1OweCount
+      user2OweCount
+      createdAt
     }
   }
 `;

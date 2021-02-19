@@ -8,6 +8,7 @@ import { AuthContext, AuthProvider } from './context/auth';
 import AuthRoute from './utils/AuthRoute';
 import Body from './Components/Body/Body';
 import { useContext } from 'react';
+import Testform from './Components/Body/TestForm/Testform';
 
 // import AuthRoute from './utils/AuthRoute';
 
@@ -23,6 +24,7 @@ function App() {
         <Router>
         <Header /> 
           <Route exact path="/" component={Body} />
+          <Route exact path="/test" component={Testform} />
           <AuthRoute exact path="/Signup" component={Signup} />
           <AuthRoute exact path="/login" component={Login} />
         </Router>

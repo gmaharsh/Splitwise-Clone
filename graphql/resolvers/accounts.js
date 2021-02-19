@@ -32,6 +32,33 @@ module.exports = {
         }
     },
     Mutation: {
+        settleUpAmount: async (_, { postId, amount }, context) => {
+            const user = checkAuth(context)
+            
+            if (amount.trim() === '') {
+                throw new Error('Amount must not be empty')
+            }
+
+            console.log(amount)
+            const post = await Account.findById(postId);
+            console.log(post)
+            post.user1OweCount -= parseInt(amount);
+            post.user2OweCount += parseInt(amount);
+            console.log(post)
+            await post.save();
+            return post;
+            // if (post) {
+            //     post.comments.unshift({
+            //         body,
+            //         username: user.username,
+            //         createdAt: new Date()
+            //     })
+            //     await post.save();
+            //     return post;
+            // } else {
+            //     throw new UserInputError('Post not found')
+            // }
+        },
         addAmount: async(_, { amount, body, username}, context) => {
             const user = checkAuth(context)
             if (body.trim() === '') {
@@ -82,8 +109,9 @@ module.exports = {
                     createdAt: new Date(),
                     user: user.id
                 });
-                
                 console.log(newPost)
+                await newPost.save();
+                return newPost;
             } else {
                 const post = await Account.findById(postId)
                 let newUser1OweCount = post.user1OweCount;
@@ -122,6 +150,7 @@ module.exports = {
                     return post;
                 }
             }
-        }
+        },
+        
     }
 }
