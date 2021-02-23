@@ -6,7 +6,7 @@ const resolvers =  require('./graphql/resolvers/index');
 const typeDefs = require('./graphql/typeDefs');
 const cors = require('cors')
 
-
+const PORT = process.env.PORT || 5000;
 
 const server = new ApolloServer({
     typeDefs,
@@ -25,7 +25,7 @@ mongoose.connect(MONGODB, {
     console.log("Err:-", err)
 })
 
-server.listen(5000)
+server.listen(PORT)
     .then(res => {
         console.log("Server is running at port")
     }) 
