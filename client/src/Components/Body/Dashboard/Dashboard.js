@@ -1,20 +1,22 @@
 import { gql, useMutation, useQuery } from '@apollo/react-hooks';
 import React, { useContext, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Button, Dropdown, Form, Icon, Input, MenuItem, Modal, Popup, Select } from 'semantic-ui-react';
 import { AuthContext } from '../../../context/auth';
 import { FETCH_USERS_QUERY } from '../../../utils/graphql';
 import { FETCH_POSTS_QUERY } from '../../../utils/graphql';
+import Accounts from './Accounts/Accounts';
 // import { SETTLE_UP } from '../../../utils/graphql';
 import Card from './Card/Card';
 import Charts from './Charts/Charts';
 import './Dashboard.css';
-function Dashboard() {
+function Dashboard({props}) {
     
 
     const user = useContext(AuthContext)
-    const [borrow, setBorrow] = useState("");
     const [owe, setOwe] = useState([])
     const [owed, setOwed] = useState([])
+    const [counter, setCounter] = useState([])
     const [firstOpen, setFirstOpen] = useState(false)
     const [secondOpen, setSecondOpen] = useState(false)
     const [thirdOpen, setThirdOpen] = useState(false)
@@ -23,12 +25,10 @@ function Dashboard() {
     const [settleUpName, setsettleUpName] = useState([]);
     let amountOwed = 0;
     let amountOwe = 0;
-    // const settleUpName = "";
 
     const [settleUpvalues, setsettleUpValues] = useState({
         amount: "",
         postId: "",
-        // name: ""
     });
 
     const [values, setValues] = useState({
@@ -36,8 +36,6 @@ function Dashboard() {
         amount: "",
         username: ""
     });
-
-    
 
     const changeValues = (event) => {
         setValues({ ...values, [event.target.name]: event.target.value })
@@ -49,23 +47,61 @@ function Dashboard() {
 
     const { loading, data: users } = useQuery(FETCH_USERS_QUERY); 
 
-    const { data: posts } = useQuery(FETCH_POSTS_QUERY, { 
+    
+
+    useEffect(() => {
+        if (users) {
+            users.getUsers.map(friends => {
+                if (friends.username != "Maharsh") {
+                    setFriends(prevState => [...prevState, friends.username])
+                }})
+        }
+        
+    },[users])
+
+    const settleUp = () => {
+        // console.log("I am clicked")
+        owe.map(o => {
+            console.log(o.AccountDetails.id)
+            setsettleUpValues({
+                postId:o.AccountDetails.id,
+                amount: (-o.AccountDetails.amount),
+            })
+            setsettleUpName(o.AccountDetails.friendName)
+        })
+        // console.log(settleUpvalues)
+    }
+
+    
+    const submitsettleUpForm = (e) => {
+        e.preventDefault();
+        setSecondOpen(false)
+        setThirdOpen(false)
+        // console.log("settleUpvalues after submitting", settleUpvalues)
+        settleUpAmount();
+    }
+
+    
+
+    const { data } = useQuery(FETCH_POSTS_QUERY, { 
         variables: { 
             username: user.user.username
         },
         update(_, result) {
-            console.log("results from post query", result)
+            // console.log("results from post query", result)
         }
     })
 
-    // const openCharts = () => {
-        
-    // }
-
+    
+    // console.log("Data before UseEffect Block", data)
+    console.log(counter)
     useEffect(() => {
-        if (posts) {
-            posts.getAccountDetails.map(account => {
-                console.log("Account Checking", account)
+        // console.log("Data Passed in useEffect", data)
+        setOwe([])
+        setOwed([])
+        if (data) {
+            data.getAccountDetails.map(account => {
+                // console.log("Account Checking", account)
                 if (account.user1 === user.user.username) {
                     let AccountDetails = {
                         id: account._id,
@@ -73,8 +109,11 @@ function Dashboard() {
                         amount: account.user1OweCount
                     }
                     if (account.user1OweCount > 0) {
+                        // setOwedAmount([...owedAmount, account.amountOwe])
                         setOwed(prevState => [...prevState, {AccountDetails}])
                     } else {
+                        console.log(account.user1OweCount)
+                        // setOweAmount([...owedAmount, account.amountOwe])
                         setOwe(prevState => [...prevState, {AccountDetails}])
                     }
                 }
@@ -85,84 +124,95 @@ function Dashboard() {
                         amount: -account.user1OweCount
                     }
                     if (account.user2OweCount > 0) {
+                        // setOwedAmount([...owedAmount, account.amountOwe])
                         setOwed(prevState => [...prevState, {AccountDetails}])
                     } else {
+                        // console.log(account.user2OweCount)
+                        // setOweAmount([...owedAmount, account.amountOwe])
                         setOwe(prevState => [...prevState, {AccountDetails}])
                     }
                 }
             })
         }
-        
-    }, [posts])
+    },[data, counter])
 
-    useEffect(() => {
-        if (users) {
-            users.getUsers.map(friends => {
-                if (friends.username != "Maharsh") {
-                    // console.log("Dashboard for friends", friends)
-                    setFriends(prevState => [...prevState, friends.username])
-                }})
-        }
-        
-    },[users])
-
-    const settleUp = () => {
-        console.log("I am clicked")
-        owe.map(o => {
-            console.log(o.AccountDetails.id)
-            setsettleUpValues({
-                postId:o.AccountDetails.id,
-                amount: (-o.AccountDetails.amount),
-            })
-            setsettleUpName(o.AccountDetails.friendName)
-        })
-        console.log(settleUpvalues)
-    }
+    
 
     const submitForm = (e) => {
         e.preventDefault();
         setFirstOpen(false)
-        // console.log("Values", values)
         addBills();
     }
 
-    const submitsettleUpForm = (e) => {
-        e.preventDefault();
-        setSecondOpen(false)
-        setThirdOpen(false)
-        console.log("settleUpvalues after submitting", settleUpvalues)
-        settleUpAmount();
-    }
-
-    const [settleUpAmount] = useMutation(SETTLE_UP, {
-        update() {
-            // setComment('');
-            // commentInputRef.current.blur();
-        },
-        variables:settleUpvalues
-    });
-
-    
     const [addBills, { error }] = useMutation(ADD_TRANSACTION, {
         variables: values,
-        update(_, result) {
-            // console.log(result.data)
-            // const data = proxy.readQuery({ query: FETCH_POSTS_QUERY })
-            // console.log("Reading through Proxy:-", data)
-            // const newData = [result.data, data]
-            // proxy.writeQuery({
-            //     query: FETCH_POSTS_QUERY,
-            //     data: {
-            //         posts: [...data.posts, result.data],
-            //     },
-            //     })
+        update(proxy, result) {
+            console.log(result.data.addAmount)
+            const data = proxy.readQuery({
+                query: FETCH_POSTS_QUERY,
+                variables: {
+                    username: user.user.username
+                }
+            });
+            console.log(data)
+            data && data.getAccountDetails.map(d => {
+                if (result.data.addAmount.user1 === d.user1) {
+                    if (result.data.addAmount.user2 === d.user2) {
+                        d.amountOwe = [result.data.addAmount.amountOwe[0], ...d.amountOwe]
+                        d.user1OweCount = result.data.addAmount.user1OweCount;
+                        d.user2OweCount = result.data.addAmount.user2OweCount;
+                        proxy.writeQuery({ query: FETCH_POSTS_QUERY, data });
+                        setCounter(counter + 1)
+                    } else {
+                        
+                    }
+                }
+            })
+            
+            // console.log("Changed Data", data)
             values.body = '';
             values.amount = '';
             values.username = '';
-        },onError(err) {
-            setErrors(err&&err.graphQLErrors[0]?err.graphQLErrors[0].extensions.exception.errors:{});
+        }, onError(err) {
+            setErrors(err && err.graphQLErrors[0] ? err.graphQLErrors[0].extensions.exception.errors : {});
         }
-    })
+    });
+
+    const [settleUpAmount] = useMutation(SETTLE_UP, {
+        variables:settleUpvalues,
+        update(proxy, result) {
+            console.log(result.data.settleUpAmount)
+            const data = proxy.readQuery({
+                query: FETCH_POSTS_QUERY,
+                variables: {
+                    username: user.user.username
+                }
+            });
+            console.log(data)
+            data && data.getAccountDetails.map(d => {
+                // console.log(result.data.settleUpAmount.user1)
+                // console.log(result.data.settleUpAmount.user2)
+                
+                if (result.data.settleUpAmount.user1 === d.user1) {
+                    if (result.data.settleUpAmount.user2 === d.user2) {
+                        // console.log(d.user1)
+                        // console.log(d.user2)
+                        d.user1OweCount = result.data.settleUpAmount.user1OweCount;
+                        d.user2OweCount = result.data.settleUpAmount.user2OweCount;
+                        proxy.writeQuery({ query: FETCH_POSTS_QUERY, data });
+                        setCounter(counter + 1)
+                        // 
+                    }
+                }
+            })
+            
+            console.log("Changed Data", data)
+
+            settleUpvalues.amount = "";
+            settleUpvalues.postId = "";
+
+        }
+    });
 
     const submitPayment = () => {
         setSecondOpen(false)
@@ -250,8 +300,9 @@ function Dashboard() {
                                         >
                                             <Dropdown.Menu>
                                             <Dropdown.Header content='People You Might Know' />
+                                                <Dropdown.Item  value="You Owe Full" />
                                             {/* {friendOptions.map((option) => (
-                                                <Dropdown.Item key={option.value} {...option} />
+                                                
                                             ))} */}
                                             </Dropdown.Menu>
                                         </Dropdown>
@@ -267,7 +318,6 @@ function Dashboard() {
                                             content="Save"
                                             type='submit'
                                             positive
-                                            
                                         />
                                 </Modal.Actions>
                                 {Object.keys(errors).length > 0 && (
@@ -390,7 +440,7 @@ function Dashboard() {
                 </div>
                 <div className="dashboard__accounts">
                     <div className="dashboard__owe">
-                        {owe && owe.map(account => (
+                       {owe && owe.map(account => (
                             // console.log(account.AccountDetails.friendName)
                             <Card name={account.AccountDetails.friendName} amount={-(account.AccountDetails.amount)} owe={true} />
                         ))}
@@ -400,17 +450,6 @@ function Dashboard() {
                             // console.log(account.AccountDetails.friendName)
                             <Card name={account.AccountDetails.friendName} amount={account.AccountDetails.amount} owe={false} />
                         ))}
-                    </div>
-                </div>
-                <div className="dashboard__accounts">
-                    <div className="dashboard__owe">
-                       {/* <Charts /> */}
-                    </div>
-                    <div className="dashboard__owed">
-                        {/* {owed && owed.map(account => (
-                            // console.log(account.AccountDetails.friendName)
-                            <Card name={account.AccountDetails.friendName} amount={account.AccountDetails.amount} owe={false} />
-                        ))} */}
                     </div>
                 </div>
             </div>

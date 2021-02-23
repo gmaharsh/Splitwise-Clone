@@ -4,6 +4,7 @@ import './Login.css';
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks';
 import { AuthContext } from '../../../context/auth';
+import { auth, provider } from '../../../firebase';
 
 
 function Login(props) {
@@ -15,6 +16,21 @@ function Login(props) {
         password: "",
     });
 
+    const googleSignIn = () => {
+        console.log("Google Sign In")
+        auth.signInWithPopup(provider)
+            .then((result) => {
+                setValues({
+                    email: result.user.email,
+                    password: result.user.uid
+                })
+            })
+        // console.log(values)
+    }
+
+    
+    // console.log(values)
+
     const [loginUser, { loading }] = useMutation(LOGIN_USER, {
         update(_, { data: { login: userData } }) {
             context.login(userData)
@@ -24,6 +40,12 @@ function Login(props) {
         },
         variables:values
     })
+
+    if (values.password != "") {
+        console.log("Call Google SignIn")
+        console.log(values)
+        loginUser()
+    }
 
     const onChangeValues = (e) => {
         setValues({...values, [e.target.name]: e.target.value});
@@ -63,14 +85,14 @@ function Login(props) {
                     </Form.Field>
                     <Button className="ui orange button" type='submit'>Log in</Button>
                     <p>Forgot your password? <span style={{ color: 'blue'}}>Click Here</span></p>
-                    <hr />
-                    <div className="login__socialButtons">
+                    <hr />  
+                </Form>
+                <div className="login__socialButtons">
                         <p>Or log in with</p>
-                        <Button basic>
+                        <Button basic onClick={googleSignIn}>
                             <Icon name='google' /> Google
                         </Button>
                     </div>
-                </Form>
                 {Object.keys(errors).length > 0 && (
                     <div className="ui error message">
                     <ul className="list">

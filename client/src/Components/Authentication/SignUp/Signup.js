@@ -4,6 +4,7 @@ import './Signup.css';
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks';
 import { AuthContext } from '../../../context/auth';
+import { auth, provider } from '../../../firebase';
 
 
 function Signup(props) {
@@ -16,26 +17,59 @@ function Signup(props) {
         password: "",
     });
 
-    const [addUser, { loading }] = useMutation(REGISTER_USER, {
-        update(_, {data : {register: userData}}) {
-            context.register(userData)
-            props.history.push('/')
-        },onError(err) {
-            // setErrors(err.graphQLErrors[0].extensions.exception.errors);
-        },
-        variables:values
-    })
+    let email = ""
+    let password = ""
+    let username = ""
+
+    
 
 
     const onChangeValues = (e) => {
         setValues({...values, [e.target.name]: e.target.value});
     }
 
-    const onSubmit = (e) => {
+    
+
+    //Google SignUp
+    const googleSignUp = (e) => {
+        console.log("I am clicked")
         e.preventDefault();
+
+        auth.signInWithPopup(provider)
+            .then(result => {
+                setValues({
+                    username: result.user.displayName,
+                    email: result.user.email,
+                    password: result.user.uid
+                });
+            })
+            .catch((error) => alert(error.message));
+    }
+
+    
+
+    const [addUser, { loading }] = useMutation(REGISTER_USER, {
+        variables:values,
+        update(_, result ) {
+            console.log(result)
+            context.register(result.data.register)
+            props.history.push('/')
+        },onError(err) {
+            // setErrors(err.graphQLErrors[0].extensions.exception.errors);
+        }
+    })
+
+    if (values.password != "") {
+        addUser()
+    }
+
+    const onSubmit = () => {
+        // e.preventDefault();
         console.log(values)
         addUser()
     }
+
+    // console.log(values)
     
 
     return (
@@ -79,7 +113,7 @@ function Signup(props) {
                             Sign me up!
                         </Button>
                         or 
-                        <Button basic>
+                        <Button basic onClick={googleSignUp}>
                             <Icon name='google' /> Google
                         </Button>
                     </div>

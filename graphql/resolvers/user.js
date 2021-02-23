@@ -16,14 +16,28 @@ function generateToken(user) {
     return token;
 }
 
-// const transporter = nodemailer.createTransport(sendgridTransport({
-//     auth: {
-//         api_key:"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",
-//     }
-// }))
+function generateEmail(res) {
+    res.then((newUser) => {
+        transporter.sendMail({
+            to: newUser.email,
+            from: "mgheewala@hawk.iit.edu",
+            subject: 'Welcome to my clone',
+            text: 'Hope you have get onboarding and nice experience',
+            html: '<b>Welcome to Splitwise Clone</b> <p>Hope you have get onboarding and nice experience</p>'
+        })
+    }).catch(err => {
+        console.log(err)
+    })
+}
 
-const sgMail = require('@sendgrid/mail')
-sgMail.setApiKey("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")
+const transporter = nodemailer.createTransport(sendgridTransport({
+    auth: {
+        api_key:"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",
+    }
+}))
+
+// const sgMail = require('@sendgrid/mail')
+// sgMail.setApiKey(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)
 
 module.exports = {
     Query: {
@@ -73,6 +87,15 @@ module.exports = {
                 throw new UserInputError('Errors', {errors})
             }
 
+            const user__username = await User.findOne({ username });
+            if (user__username) {
+                throw new UserInputError('Particular Username Already Exists', {
+                    errors: {
+                        email:'Username Already Exists'
+                    }
+                })
+            }
+
             const user = await User.findOne({ email });
             if (user) {
                 throw new UserInputError('Particular Email Already Exists', {
@@ -90,30 +113,26 @@ module.exports = {
                 createdAt: new Date().toISOString(),
             })
 
-            console.log(newUser)
+            // console.log(newUser)
 
-            const res = await newUser.save();
-            
+            const res = await newUser.save()
+            // console.log("Res:-", res)
             const token = generateToken(res);
-
-            if (token) {
-                console.log(newUser.email)
-                const msg = {
-                    to: 'newUser.email', // Change to your recipient
-                    from: 'mgheewala@hawk.iit.edu', // Change to your verified sender
-                    subject: 'Sending with SendGrid is Fun',
-                    text: 'and easy to do anywhere, even with Node.js',
-                    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-                }
-                transporter
-                    .send(msg)
-                    .then(() => {
-                        console.log('Email sent')
-                    })
-                    .catch((error) => {
-                        console.error(error)
-                    })
-            }
+            console.log(token)
+            // console.log(token)
+            // const generateEmail = await generateEmail(res)
+            
+            // await res.then((newUser) => {
+            //             transporter.sendMail({
+            //                 to: newUser.email,
+            //                 from: "mgheewala@hawk.iit.edu",
+            //                 subject: 'Welcome to my clone',
+            //                 text: 'Hope you have get onboarding and nice experience',
+            //                 html: '<b>Welcome to Splitwise Clone</b> <p>Hope you have get onboarding and nice experience</p>'
+            //             })
+            //         }).catch(err => {
+            //             console.log(err)
+            // })
 
             return {
                 ...res._doc,

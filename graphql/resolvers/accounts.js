@@ -47,17 +47,6 @@ module.exports = {
             console.log(post)
             await post.save();
             return post;
-            // if (post) {
-            //     post.comments.unshift({
-            //         body,
-            //         username: user.username,
-            //         createdAt: new Date()
-            //     })
-            //     await post.save();
-            //     return post;
-            // } else {
-            //     throw new UserInputError('Post not found')
-            // }
         },
         addAmount: async(_, { amount, body, username}, context) => {
             const user = checkAuth(context)
@@ -129,9 +118,11 @@ module.exports = {
                     })
                     post.user1OweCount = newUser1OweCount
                     post.user2OweCount = newUser2OweCount
+
+                    let res =  await post.save();
                     
-                    await post.save();
-                    return post;
+                    console.log(res)
+                    return res;
                 } else {
                     console.log("Different User Adding Transaction")
                     let newUser1OweCount = post.user2OweCount;
@@ -146,8 +137,10 @@ module.exports = {
                     })
                     post.user1OweCount = newUser2OweCount
                     post.user2OweCount = newUser1OweCount
-                    await post.save();
-                    return post;
+
+                    let res = await post.save();
+                    console.log(res)
+                    return res;
                 }
             }
         },
